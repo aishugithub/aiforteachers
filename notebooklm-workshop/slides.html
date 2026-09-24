@@ -1,0 +1,492 @@
+<title>NotebookLM for Teachers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Caveat:wght@600;700&display=swap">
+<style>
+/* One deliberate look: a ruled exercise-book page on a navy desk. Built for projectors. */
+:root{
+  color-scheme:light;
+  --desk:#17213A; --paper:#F7F9FC; --rule:#DCE5F1; --margin:#E0676B;
+  --ink:#16223D; --ink2:#4B5A7A; --blue:#2A54C8; --blue-soft:#E3EBFD;
+  --hl:#FFE45C; --green:#1E8A4C; --green-soft:#D9F4E3; --pink-soft:#FDE2E6;
+  --card:#FFFFFF; --line:#D3DDEB;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --hand:"Caveat","Comic Sans MS",cursive;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--desk);color:var(--ink);font-family:var(--body);overflow:hidden}
+.stage{position:fixed;inset:0}
+.slide{position:absolute;left:50%;top:50%;width:1280px;height:720px;margin:-360px 0 0 -640px;
+  background:
+    linear-gradient(90deg,transparent 94px,var(--margin) 94px,var(--margin) 96px,transparent 96px),
+    repeating-linear-gradient(var(--paper) 0 39px,var(--rule) 39px 40px);
+  background-color:var(--paper);
+  border-radius:6px;box-shadow:0 20px 60px rgba(0,0,0,.35);
+  padding:56px 72px 56px 136px;display:flex;flex-direction:column;gap:22px;
+  opacity:0;visibility:hidden;transition:opacity .35s ease,transform .35s ease;overflow:hidden}
+.slide.on{opacity:1;visibility:visible}
+.slide .notes{display:none}
+.pg{position:absolute;right:28px;bottom:18px;font:600 15px var(--display);color:var(--ink2);font-variant-numeric:tabular-nums}
+.tag{position:absolute;left:24px;top:52px;font:700 22px var(--hand);color:var(--margin);transform:rotate(-8deg);width:64px;text-align:center;line-height:1}
+
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.08}
+h1{font-size:76px;font-weight:800;letter-spacing:-.025em}
+h2{font-size:50px;font-weight:800;letter-spacing:-.02em}
+h3{font-size:25px;font-weight:700}
+p{margin:0}
+.kicker{font:700 16px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+.lede{font-size:25px;line-height:1.45;color:var(--ink2);max-width:62ch}
+.hand{font-family:var(--hand);font-size:34px;color:var(--margin);line-height:1.1}
+mark{background:linear-gradient(100deg,transparent 1%,var(--hl) 3%,var(--hl) 97%,transparent 99%);color:inherit;padding:0 .12em}
+.body{font-size:22px;line-height:1.45}
+ul.pts{margin:0;padding-left:1.1em;display:grid;gap:10px;font-size:23px;line-height:1.4}
+ul.pts li::marker{color:var(--margin)}
+.g2,.g3,.g4{display:grid;gap:18px}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:18px 20px;display:grid;gap:8px;align-content:start}
+.card p{font-size:19px;line-height:1.4;color:var(--ink2)}
+.card h3{font-size:23px}
+.card .ico{width:44px;height:44px;border-radius:10px;background:var(--blue-soft);display:grid;place-items:center}
+.card .ico svg{width:26px;height:26px;stroke:var(--blue);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.chip{display:inline-block;font:700 15px var(--body);padding:3px 10px;border-radius:99px;background:var(--blue-soft);color:var(--blue)}
+.chip.g{background:var(--green-soft);color:var(--green)}
+.chip.p{background:var(--pink-soft);color:#A33A45}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.spacer{flex:1}
+.foot{font-size:15px;color:var(--ink2)}
+
+/* title slide */
+.title-slide{justify-content:center;gap:26px}
+.title-slide h1 .nb{color:var(--blue)}
+.title-slide .who{font-size:21px;color:var(--ink2)}
+.sticky{position:absolute;right:84px;top:92px;width:260px;padding:22px;background:var(--hl);transform:rotate(3deg);box-shadow:0 8px 20px rgba(22,34,61,.18);font:700 30px/1.15 var(--hand);color:var(--ink)}
+
+/* big number */
+.big{font:800 120px/1 var(--display);color:var(--blue);letter-spacing:-.04em}
+
+/* flow diagram */
+.flow{display:grid;grid-template-columns:1fr 60px 1.25fr 60px 1fr;align-items:stretch}
+.flow .box{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:20px;display:grid;gap:10px;align-content:start}
+.flow .box h3{font-size:30px}
+.flow .box ul{margin:0;padding-left:1em;font-size:19px;line-height:1.45;color:var(--ink2)}
+.flow .arrow{display:grid;place-items:center}
+.flow .arrow svg{width:48px;height:30px;stroke:var(--margin);stroke-width:3.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* chat mock */
+.chat{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px}
+.q{justify-self:end;background:var(--blue);color:#fff;padding:10px 16px;border-radius:14px 14px 4px 14px;font-size:20px;max-width:80%}
+.a{font-size:20px;line-height:1.5}
+.cite{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--green-soft);color:var(--green);font:700 13px var(--body);vertical-align:2px;margin-left:2px}
+.src{background:var(--paper);border-left:4px solid var(--green);padding:12px 14px;font-size:18px;line-height:1.45;color:var(--ink2);border-radius:0 8px 8px 0}
+.src b{color:var(--green)}
+
+/* compare table */
+table{border-collapse:collapse;width:100%;font:inherit;font-size:19px;background:var(--card);border-radius:12px;overflow:hidden}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--display);font-size:19px;background:var(--blue-soft)}
+tr:last-child td{border-bottom:0}
+td.y{color:var(--green);font-weight:700}
+
+/* steps sequence */
+.seq{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;counter-reset:n}
+.seq .card{counter-increment:n;position:relative;padding-top:52px}
+.seq .card::before{content:counter(n);position:absolute;top:12px;left:18px;width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--paper);font:800 17px/32px var(--display);text-align:center}
+.seq .card h3{font-size:22px}
+.seq .card p{font-size:17px}
+
+.prompt{background:var(--card);border:1.5px dashed var(--blue);border-radius:10px;padding:12px 16px;font-size:18.5px;line-height:1.4}
+.prompt b{display:block;font:700 13px var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:4px}
+
+.tight{gap:12px}.tight .card{padding:12px 18px;gap:4px}.tight .card p{font-size:17.5px;line-height:1.35}
+.refs{font-size:14.5px;line-height:1.45;color:var(--ink2);display:grid;gap:4px}
+.refs i{color:var(--ink)}
+
+#qr{background:#fff;padding:14px;border-radius:12px;border:2px solid var(--ink);width:max-content}
+#qr svg{display:block;width:230px;height:230px}
+
+/* controls */
+.bar{position:fixed;left:0;right:0;top:0;height:5px;background:rgba(255,255,255,.08);z-index:3}
+.bar i{display:block;height:100%;width:0;background:var(--hl);transition:width .3s}
+.ctrl{position:fixed;right:16px;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;gap:6px;z-index:3;opacity:.35;transition:opacity .2s}
+.ctrl:hover,.ctrl:focus-within{opacity:1}
+.ctrl button{font:600 14px var(--body);background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:7px 12px;cursor:pointer}
+.ctrl button:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
+.notesPanel{position:fixed;left:16px;right:16px;bottom:calc(60px + env(safe-area-inset-bottom,0px));max-width:760px;margin:0 auto;background:#0E1528;color:#E6ECF8;border:1px solid #33416A;border-radius:12px;padding:16px 20px;font-size:16px;line-height:1.55;z-index:4;max-height:40vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.notesPanel b{color:var(--hl);font-family:var(--display)}
+@media (prefers-reduced-motion:reduce){.slide,.bar i{transition:none}}
+</style>
+
+<div class="bar" aria-hidden="true"><i id="prog"></i></div>
+<main class="stage" id="stage">
+
+<!-- 1 -->
+<section class="slide title-slide">
+  <span class="kicker">Workshop for school teachers</span>
+  <h1>Your own AI teaching assistant:<br><span class="nb">NotebookLM</span></h1>
+  <p class="lede">Turn the textbooks, notes and videos you already use into answers you can verify, study guides, quizzes, mind maps and podcasts. It's free with a Google account.</p>
+  <p class="who">Hands-on session · Sri Ramachandra Faculty of Engineering and Technology</p>
+  <div class="sticky">Bring a laptop or phone.<br>You'll build a notebook today!</div>
+  <aside class="notes">Welcome everyone. Ask: How many of you have tried ChatGPT or Gemini? How many worried the answer might be wrong? Today's tool is different: it only uses the material you give it and it shows you where every answer came from. Ask participants to open notebooklm.google.com and sign in while you talk.</aside>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+  <span class="kicker">Today's plan</span>
+  <h2>What we'll cover in the next 90 minutes</h2>
+  <div class="g2" style="margin-top:10px">
+    <div class="card"><h3>1 · Understand</h3><p>What NotebookLM is, how it differs from ChatGPT, and why it's safer for teaching.</p></div>
+    <div class="card"><h3>2 · See it</h3><p>A tour of every feature: chat with citations, audio and video overviews, mind maps, quizzes, flashcards, reports and slides.</p></div>
+    <div class="card"><h3>3 · Do it</h3><p>A live demo while you follow along using the hands-on lab guide.</p></div>
+    <div class="card"><h3>4 · Plan it</h3><p>Classroom ideas by subject, prompt recipes, and rules for safe use.</p></div>
+  </div>
+  <p class="hand">Laptops open for part 3!</p>
+  <aside class="notes">Quick agenda. Suggested timing: 15 min concepts, 20 min feature tour, 40 min hands-on, 15 min ideas and Q&amp;A.</aside>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+  <span class="kicker">The teacher's problem</span>
+  <h2>Lots of material. Not enough hours.</h2>
+  <div class="g3" style="margin-top:8px">
+    <div class="card"><span class="big">40+</span><p>students per class, each learning at a different pace and level.</p></div>
+    <div class="card"><span class="big">5+</span><p>kinds of material for one chapter: textbook, workbook, circulars, videos, your own notes.</p></div>
+    <div class="card"><span class="big">1</span><p>teacher, who also has to make worksheets, question papers, revision notes and parent messages.</p></div>
+  </div>
+  <p class="lede">General AI chatbots help, but they can <mark>make up facts</mark> and they don't know <i>your</i> syllabus.</p>
+  <aside class="notes">Make it personal. Ask a teacher how long it took them to write their last question paper. Point out that chatbots answer from the whole internet, which is not always the syllabus and not always correct.</aside>
+</section>
+
+<!-- 4 -->
+<section class="slide">
+  <span class="kicker">What is NotebookLM?</span>
+  <h2>An AI that reads <mark>only what you give it</mark></h2>
+  <div class="g2" style="margin-top:6px">
+    <div class="card" style="border-color:var(--line)">
+      <span class="chip p">General chatbot</span>
+      <h3>Answers from the whole internet</h3>
+      <ul class="pts" style="font-size:20px"><li>May mix up syllabi and boards</li><li>No easy way to check where a fact came from</li><li>Can confidently invent answers</li></ul>
+    </div>
+    <div class="card" style="border-color:var(--green)">
+      <span class="chip g">NotebookLM</span>
+      <h3>Answers from <i>your</i> sources</h3>
+      <ul class="pts" style="font-size:20px"><li>Uses your textbook, notes, videos</li><li>Every answer has clickable citations</li><li>Says so when the sources don't cover the question</li></ul>
+    </div>
+  </div>
+  <p class="body">A free Google tool at <b>notebooklm.google.com</b>, also available as an Android and iOS app. It runs on Google's Gemini models.</p>
+  <aside class="notes">Key idea: "source-grounded". Researchers call this approach retrieval-augmented generation (RAG). Think of a very fast teaching assistant who has read only your books.</aside>
+</section>
+
+<!-- 5 -->
+<section class="slide">
+  <span class="kicker">How it works</span>
+  <h2>Three panels: sources in, teaching material out</h2>
+  <div class="flow" style="margin-top:10px">
+    <div class="box"><span class="chip">Left</span><h3>Sources</h3><ul><li>Textbook PDFs</li><li>Google Docs &amp; Slides</li><li>Websites, YouTube</li><li>Audio, pasted text</li></ul></div>
+    <div class="arrow"><svg viewBox="0 0 48 30"><path d="M2 15h40M30 4l12 11-12 11"/></svg></div>
+    <div class="box"><span class="chip g">Middle</span><h3>Chat</h3><ul><li>Ask anything about your sources</li><li>Answers with numbered citations</li><li>Save good answers as notes</li><li>Set a style: tutor, simple, detailed</li></ul></div>
+    <div class="arrow"><svg viewBox="0 0 48 30"><path d="M2 15h40M30 4l12 11-12 11"/></svg></div>
+    <div class="box"><span class="chip p">Right</span><h3>Studio</h3><ul><li>Audio &amp; Video Overviews</li><li>Mind maps, reports</li><li>Quizzes, flashcards</li><li>Slides, infographics</li></ul></div>
+  </div>
+  <p class="hand">One notebook = one chapter or unit.</p>
+  <aside class="notes">Show the real screen now if you can, and point to each panel. On mobile these become three tabs at the bottom.</aside>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+  <span class="kicker">Step 1 · Sources</span>
+  <h2>Bring in what you already use</h2>
+  <div class="g4">
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/></svg></div><h3>PDFs &amp; Word files</h3><p>NCERT and state board chapters, workbooks, circulars.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div><h3>Google Docs &amp; Slides</h3><p>Your lesson plans and presentations, straight from Drive.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M10 9l5 3-5 3z"/></svg></div><h3>YouTube videos</h3><p>Any public video with captions. It reads the transcript.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg></div><h3>Websites</h3><p>Articles, Wikipedia pages, government portals.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4"/><path d="M5 19h14"/></svg></div><h3>Audio files</h3><p>Recorded lectures or talks, transcribed for you.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M8 4h8v4H8z"/><rect x="5" y="6" width="14" height="15" rx="2"/></svg></div><h3>Pasted text</h3><p>Anything you can copy: notes, messages, question banks.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></div><h3>Discover &amp; Deep Research</h3><p>Let it search the web and suggest sources for a topic.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></div><h3>Up to 50 per notebook</h3><p>On the free plan, and each source can run to hundreds of pages.</p></div>
+  </div>
+  <aside class="notes">Demo: create a notebook, add an NCERT chapter PDF, one YouTube link and the sample text from the lab guide. Tell teachers NCERT books are free at ncert.nic.in/textbook.php. Mention that scanned PDFs read poorly.</aside>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+  <span class="kicker">Step 2 · Chat</span>
+  <h2>Every answer shows where it came from</h2>
+  <div class="g2" style="grid-template-columns:1.25fr 1fr;align-items:start">
+    <div class="chat">
+      <div class="q">Are clouds made of water vapour?</div>
+      <div class="a">No. Clouds are made of <b>tiny droplets of liquid water</b> or ice crystals<span class="cite">1</span>. Water vapour is invisible. It forms droplets only when it rises and cools, which is called condensation<span class="cite">2</span>.</div>
+    </div>
+    <div style="display:grid;gap:12px">
+      <div class="src"><b>Source 1 · Class 7 notes</b><br>"…Clouds are actually made of liquid water droplets or ice crystals."</div>
+      <div class="src"><b>Source 2 · Class 7 notes</b><br>"Cool vapour turns back into tiny droplets of liquid water…"</div>
+      <p class="hand">Click a number and it jumps to the exact line.</p>
+    </div>
+  </div>
+  <div class="row"><span class="chip">Learning-guide mode asks students questions back</span><span class="chip">Answers in Tamil, Hindi &amp; 80+ languages</span><span class="chip">Save to note</span></div>
+  <aside class="notes">Demo: ask a question, click a citation. Then ask something not in the sources (e.g. a cricket question) to show that it refuses to guess. Open the chat settings and show the Learning guide option and output language.</aside>
+</section>
+
+<!-- 8 -->
+<section class="slide">
+  <span class="kicker">Step 3 · Studio</span>
+  <h2>One click for teaching material</h2>
+  <div class="g3">
+    <div class="card"><h3>Audio Overview</h3><p>A two-host podcast about your sources, in many languages.</p></div>
+    <div class="card"><h3>Video Overview</h3><p>A narrated slideshow that explains the topic visually.</p></div>
+    <div class="card"><h3>Mind Map</h3><p>An expandable concept map of the whole chapter.</p></div>
+    <div class="card"><h3>Reports</h3><p>Study guides, briefing docs, FAQs, timelines, or your own format.</p></div>
+    <div class="card"><h3>Quiz &amp; Flashcards</h3><p>Interactive practice with explanations. You set the difficulty and number.</p></div>
+    <div class="card"><h3>Slide Deck &amp; Infographic</h3><p>Presentation slides and one-page visual summaries.</p></div>
+  </div>
+  <p class="foot">Google adds and renames Studio tools often. Buttons may look slightly different on your screen.</p>
+  <aside class="notes">Overview slide. Every tool has a pencil (customise) icon where you type who the audience is, what to focus on, and what language to use. That's the secret to getting classroom-ready output.</aside>
+</section>
+
+<!-- 9 -->
+<section class="slide">
+  <span class="kicker">Studio · Audio Overview</span>
+  <h2>Your chapter as a podcast</h2>
+  <div class="g2" style="grid-template-columns:1.1fr 1fr;align-items:start">
+    <ul class="pts">
+      <li>Two AI hosts discuss your sources in a natural conversation.</li>
+      <li>Formats: <b>Deep dive</b>, <b>Brief</b>, <b>Critique</b>, <b>Debate</b>. Choose short, default or long.</li>
+      <li>Available in <mark>Tamil, Hindi, Telugu, Malayalam, Kannada</mark> and many more languages.</li>
+      <li><b>Interactive mode:</b> "join" the podcast and ask the hosts a question out loud.</li>
+    </ul>
+    <div style="display:grid;gap:12px">
+      <div class="prompt"><b>Customise box</b>Listeners are Class 7 students in Chennai. Use simple words, one local weather example, and end with three questions to think about.</div>
+      <div class="card"><h3>In class</h3><p>Play it as a lesson hook, share it for homework listening, or send it to absent students.</p></div>
+    </div>
+  </div>
+  <aside class="notes">Play 60 seconds of a pre-generated audio overview. Generating takes a few minutes, so prepare one before the session. If time allows, click Join and ask the hosts a question live. It always gets a reaction.</aside>
+</section>
+
+<!-- 10 -->
+<section class="slide">
+  <span class="kicker">Studio · See it</span>
+  <h2>Mind maps, videos, slides and infographics</h2>
+  <div class="g2">
+    <div class="card"><h3>Mind Map</h3><p>Branches expand as you click them. Click a node and the chat explains it. Download it as an image for your board or worksheet.</p><span class="chip g">Idea: hide branches and ask students to predict them</span></div>
+    <div class="card"><h3>Video Overview</h3><p>A narrated explainer built from your sources, with a choice of visual styles such as whiteboard or watercolour.</p><span class="chip g">Idea: a 5-minute recap at the end of a unit</span></div>
+    <div class="card"><h3>Slide Deck</h3><p>A presentation drafted from your notebook that you can download and edit.</p><span class="chip g">Idea: a first draft of tomorrow's class slides</span></div>
+    <div class="card"><h3>Infographic</h3><p>One visual page that summarises the key ideas.</p><span class="chip g">Idea: notice board display or revision poster</span></div>
+  </div>
+  <aside class="notes">Show the mind map live; it's the fastest. Have a video overview and a slide deck generated in advance, since they take longer.</aside>
+</section>
+
+<!-- 11 -->
+<section class="slide">
+  <span class="kicker">Studio · Check learning</span>
+  <h2>Quizzes, flashcards and study guides</h2>
+  <div class="g3">
+    <div class="card"><h3>Quiz</h3><p>Multiple-choice questions with hints and explanations linked to the source. Choose how many questions and how hard they are.</p></div>
+    <div class="card"><h3>Flashcards</h3><p>Question on the front, answer on the back. Good for key terms, dates and formulas.</p></div>
+    <div class="card"><h3>Study guide</h3><p>Key concepts, short-answer questions, an answer key and a glossary, ready to print.</p></div>
+  </div>
+  <div class="prompt"><b>Customise the quiz</b>10 questions, medium difficulty, focus on condensation and precipitation, and use common misconceptions as the wrong options.</div>
+  <p class="hand">Always read the questions before you use them!</p>
+  <aside class="notes">Generate a quiz live and answer one question wrongly to show the explanation. Stress that the teacher reviews everything before it goes to students.</aside>
+</section>
+
+<!-- 12 -->
+<section class="slide">
+  <span class="kicker">For every role in the school</span>
+  <h2>What teachers are using it for</h2>
+  <div class="g3">
+    <div class="card"><h3>Lesson planning</h3><p>Lesson plans, hooks and activities built from the chapter itself.</p></div>
+    <div class="card"><h3>Differentiation</h3><p>The same concept explained at three levels, or in the home language.</p></div>
+    <div class="card"><h3>Assessment</h3><p>Question papers mapped to Bloom's levels, rubrics and answer keys.</p></div>
+    <div class="card"><h3>Revision</h3><p>Shared notebooks where students ask questions at home and get cited answers.</p></div>
+    <div class="card"><h3>Admin</h3><p>Summaries of long circulars, CBSE guidelines and policy documents as checklists.</p></div>
+    <div class="card"><h3>Your own learning</h3><p>Understand NEP 2020, new pedagogy papers or a new subject fast.</p></div>
+  </div>
+  <aside class="notes">Ask the room: which of these would save you the most time? Take two or three answers.</aside>
+</section>
+
+<!-- 13 -->
+<section class="slide">
+  <span class="kicker">Ideas by subject</span>
+  <h2>One tool, every subject</h2>
+  <div class="g2">
+    <div class="card"><h3>Science</h3><p>Upload the chapter and a lab video. Ask for common misconceptions and make a quiz whose wrong options are those misconceptions.</p></div>
+    <div class="card"><h3>Mathematics</h3><p>Upload worked examples. Ask for similar practice problems with step-by-step solutions, then check each answer yourself.</p></div>
+    <div class="card"><h3>Languages</h3><p>Upload a poem or story. Generate a vocabulary list, character map, and an audio discussion in Tamil or English.</p></div>
+    <div class="card"><h3>Social Science</h3><p>Upload the history chapter. Create a timeline, a debate-format audio overview, and "who said what" flashcards.</p></div>
+  </div>
+  <aside class="notes">Tip for maths: NotebookLM is strongest with text. Always verify worked calculations; AI can still slip on arithmetic.</aside>
+</section>
+
+<!-- 14 -->
+<section class="slide">
+  <span class="kicker">A workflow to take home</span>
+  <h2>Prepare a whole lesson in about 20 minutes</h2>
+  <div class="seq">
+    <div class="card"><h3>Collect</h3><p>Chapter PDF, one video, your notes.</p></div>
+    <div class="card"><h3>Ask</h3><p>Key ideas, prior knowledge, misconceptions.</p></div>
+    <div class="card"><h3>Map</h3><p>Mind map to plan the flow of the lesson.</p></div>
+    <div class="card"><h3>Create</h3><p>Study guide and slide deck as drafts.</p></div>
+    <div class="card"><h3>Check</h3><p>Quiz and flashcards for the exit ticket.</p></div>
+    <div class="card"><h3>Share</h3><p>Audio overview and a chat-only notebook for students.</p></div>
+  </div>
+  <p class="lede">Your time goes into <mark>reviewing and adapting</mark> instead of typing from scratch.</p>
+  <aside class="notes">This is exactly what we'll do in the hands-on part. Point to the lab guide: its steps follow this order.</aside>
+</section>
+
+<!-- 15 -->
+<section class="slide">
+  <span class="kicker">Prompt recipes</span>
+  <h2>Ask better, get better</h2>
+  <div class="g2">
+    <div class="prompt"><b>Plan</b>Create a 40-minute lesson plan for Class 8 from these sources with a warm-up, pair activity and exit ticket.</div>
+    <div class="prompt"><b>Differentiate</b>Explain photosynthesis at three levels: struggling, average and advanced learner.</div>
+    <div class="prompt"><b>Assess</b>Write 10 MCQs whose wrong options are common misconceptions. Add an answer key with reasons.</div>
+    <div class="prompt"><b>Engage</b>Give me 3 surprising facts from these sources to open the class.</div>
+    <div class="prompt"><b>Translate</b>Explain the main idea in simple Tamil using an everyday example.</div>
+    <div class="prompt"><b>Admin</b>List every action teachers must take from this circular, with deadlines.</div>
+  </div>
+  <p class="hand">A good prompt says: who it's for · what you want · what format</p>
+  <aside class="notes">All of these prompts are in the lab guide with copy buttons, so teachers don't need to write them down.</aside>
+</section>
+
+<!-- 16 -->
+<section class="slide">
+  <span class="kicker">Why it works</span>
+  <h2>Grounded in research on AI and on learning</h2>
+  <div class="g2 tight">
+    <div class="card"><h3>Fewer made-up facts</h3><p>Answering from retrieved documents (retrieval-augmented generation) makes AI output more factual and traceable than answering from memory alone [1]. Hallucination is reduced, not removed [2].</p></div>
+    <div class="card"><h3>Testing helps memory</h3><p>Practice quizzes and flashcards use retrieval practice, one of the most effective study methods known [3, 4].</p></div>
+    <div class="card"><h3>Words + visuals</h3><p>Mind maps and videos pair words with images, which supports understanding and recall (dual coding) [5].</p></div>
+    <div class="card"><h3>Listening as review</h3><p>Audio overviews give students another way to meet the same content, useful for auditory learners and revision on the go.</p></div>
+  </div>
+  <div class="refs">
+    <span>[1] Lewis et al., <i>Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</i>, NeurIPS 2020 · [2] Ji et al., <i>Survey of Hallucination in Natural Language Generation</i>, ACM Computing Surveys 2023</span>
+    <span>[3] Roediger &amp; Karpicke, <i>Test-Enhanced Learning</i>, Psychological Science 2006 · [4] Dunlosky et al., <i>Improving Students' Learning With Effective Learning Techniques</i>, PSPI 2013 · [5] Clark &amp; Paivio, <i>Dual Coding Theory and Education</i>, Educ. Psych. Review 1991</span>
+  </div>
+  <aside class="notes">Keep this short. The point: the features aren't gimmicks. Quizzes and flashcards are retrieval practice, which Dunlosky et al. rate as high-utility. Be honest that grounding reduces errors but doesn't eliminate them.</aside>
+</section>
+
+<!-- 17 -->
+<section class="slide">
+  <span class="kicker">How it compares</span>
+  <h2>Where NotebookLM fits among AI tools</h2>
+  <table>
+    <thead><tr><th></th><th>NotebookLM</th><th>ChatGPT / Gemini chat</th><th>Teacher AI apps (MagicSchool, Khanmigo)</th></tr></thead>
+    <tbody>
+      <tr><td><b>Uses your own material</b></td><td class="y">Yes, and nothing else by default</td><td>Yes, with file upload or projects</td><td>Partly</td></tr>
+      <tr><td><b>Clickable citations to the exact line</b></td><td class="y">Yes, on every answer</td><td>Limited</td><td>Limited</td></tr>
+      <tr><td><b>Podcasts, videos, mind maps</b></td><td class="y">Built in</td><td>Mostly no</td><td>Some tools</td></tr>
+      <tr><td><b>Indian languages</b></td><td class="y">Chat and audio in many</td><td>Chat in many</td><td>Varies</td></tr>
+      <tr><td><b>Cost</b></td><td class="y">Free, with a paid tier</td><td>Free, with a paid tier</td><td>Free tier, paid features</td></tr>
+    </tbody>
+  </table>
+  <p class="foot">Other tools are catching up fast. Pick the tool that fits the task; NotebookLM is best when the answer must come from <i>your</i> material.</p>
+  <aside class="notes">Be fair to other tools. ChatGPT and Gemini are better for open-ended brainstorming; NotebookLM is best when accuracy to a specific syllabus matters.</aside>
+</section>
+
+<!-- 18 -->
+<section class="slide">
+  <span class="kicker">Use it responsibly</span>
+  <h2>Five rules before you use it with students</h2>
+  <div class="g2" style="grid-template-columns:1fr 1fr">
+    <ul class="pts">
+      <li><b>No student personal data.</b> No names, marks, health or family details. India's DPDP Act, 2023 applies.</li>
+      <li><b>Verify before you teach.</b> Click the citations. It can still misread a source.</li>
+      <li><b>Respect copyright.</b> Upload only material you are allowed to use.</li>
+    </ul>
+    <ul class="pts">
+      <li><b>Follow school policy</b> and Google's age rules before sharing with students.</li>
+      <li><b>You stay the teacher.</b> The AI drafts; your judgement decides.</li>
+    </ul>
+  </div>
+  <p class="hand">AI prepares the draft. The teacher makes the lesson.</p>
+  <aside class="notes">Pause here and take questions on privacy. Google says personal-account uploads are not used to train its models, and Workspace for Education has further protections, but the safest rule is never to upload anything identifying students.</aside>
+</section>
+
+<!-- 19 -->
+<section class="slide">
+  <span class="kicker">Your turn</span>
+  <h2>Hands-on: build your first notebook</h2>
+  <div class="g2" style="grid-template-columns:1.3fr 1fr;align-items:center">
+    <div style="display:grid;gap:16px">
+      <p class="lede">Scan the code to open the <b>Hands-On Lab guide</b>. Follow the 14 steps with me now, then keep it for practising at home.</p>
+      <ul class="pts">
+        <li>Go to <b>notebooklm.google.com</b> and sign in</li>
+        <li>Use the sample text in the guide, or your own chapter</li>
+        <li>Tick each step as you finish it</li>
+      </ul>
+      <p class="body" style="font-size:17px;color:var(--ink2);word-break:break-all">https://claude.ai/artifact/RC6B6vaik3rn1jFzFBDBTQ</p>
+    </div>
+    <div id="qr"><svg viewBox="0 0 33 33" width="230" height="230" shape-rendering="crispEdges" role="img" aria-label="QR code to the hands-on lab guide"><rect width="33" height="33" fill="#fff"/><path d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM8 0h1v1h-1zM10 0h1v1h-1zM11 0h1v1h-1zM13 0h1v1h-1zM15 0h1v1h-1zM18 0h1v1h-1zM23 0h1v1h-1zM26 0h1v1h-1zM27 0h1v1h-1zM28 0h1v1h-1zM29 0h1v1h-1zM30 0h1v1h-1zM31 0h1v1h-1zM32 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM10 1h1v1h-1zM13 1h1v1h-1zM14 1h1v1h-1zM16 1h1v1h-1zM18 1h1v1h-1zM19 1h1v1h-1zM20 1h1v1h-1zM21 1h1v1h-1zM24 1h1v1h-1zM26 1h1v1h-1zM32 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM10 2h1v1h-1zM14 2h1v1h-1zM16 2h1v1h-1zM17 2h1v1h-1zM18 2h1v1h-1zM20 2h1v1h-1zM21 2h1v1h-1zM22 2h1v1h-1zM23 2h1v1h-1zM24 2h1v1h-1zM26 2h1v1h-1zM28 2h1v1h-1zM29 2h1v1h-1zM30 2h1v1h-1zM32 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM12 3h1v1h-1zM15 3h1v1h-1zM16 3h1v1h-1zM17 3h1v1h-1zM21 3h1v1h-1zM23 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM29 3h1v1h-1zM30 3h1v1h-1zM32 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM11 4h1v1h-1zM13 4h1v1h-1zM16 4h1v1h-1zM17 4h1v1h-1zM19 4h1v1h-1zM26 4h1v1h-1zM28 4h1v1h-1zM29 4h1v1h-1zM30 4h1v1h-1zM32 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM9 5h1v1h-1zM11 5h1v1h-1zM15 5h1v1h-1zM18 5h1v1h-1zM20 5h1v1h-1zM22 5h1v1h-1zM24 5h1v1h-1zM26 5h1v1h-1zM32 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM24 6h1v1h-1zM26 6h1v1h-1zM27 6h1v1h-1zM28 6h1v1h-1zM29 6h1v1h-1zM30 6h1v1h-1zM31 6h1v1h-1zM32 6h1v1h-1zM8 7h1v1h-1zM10 7h1v1h-1zM11 7h1v1h-1zM17 7h1v1h-1zM18 7h1v1h-1zM19 7h1v1h-1zM20 7h1v1h-1zM21 7h1v1h-1zM24 7h1v1h-1zM0 8h1v1h-1zM4 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM11 8h1v1h-1zM12 8h1v1h-1zM13 8h1v1h-1zM15 8h1v1h-1zM17 8h1v1h-1zM21 8h1v1h-1zM24 8h1v1h-1zM25 8h1v1h-1zM26 8h1v1h-1zM27 8h1v1h-1zM28 8h1v1h-1zM29 8h1v1h-1zM32 8h1v1h-1zM2 9h1v1h-1zM3 9h1v1h-1zM5 9h1v1h-1zM9 9h1v1h-1zM12 9h1v1h-1zM14 9h1v1h-1zM16 9h1v1h-1zM17 9h1v1h-1zM18 9h1v1h-1zM23 9h1v1h-1zM25 9h1v1h-1zM29 9h1v1h-1zM30 9h1v1h-1zM31 9h1v1h-1zM0 10h1v1h-1zM1 10h1v1h-1zM2 10h1v1h-1zM3 10h1v1h-1zM6 10h1v1h-1zM9 10h1v1h-1zM13 10h1v1h-1zM14 10h1v1h-1zM15 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM21 10h1v1h-1zM23 10h1v1h-1zM24 10h1v1h-1zM25 10h1v1h-1zM26 10h1v1h-1zM29 10h1v1h-1zM31 10h1v1h-1zM0 11h1v1h-1zM2 11h1v1h-1zM4 11h1v1h-1zM7 11h1v1h-1zM12 11h1v1h-1zM13 11h1v1h-1zM16 11h1v1h-1zM19 11h1v1h-1zM21 11h1v1h-1zM22 11h1v1h-1zM23 11h1v1h-1zM24 11h1v1h-1zM26 11h1v1h-1zM32 11h1v1h-1zM0 12h1v1h-1zM3 12h1v1h-1zM6 12h1v1h-1zM7 12h1v1h-1zM9 12h1v1h-1zM10 12h1v1h-1zM11 12h1v1h-1zM13 12h1v1h-1zM16 12h1v1h-1zM19 12h1v1h-1zM22 12h1v1h-1zM24 12h1v1h-1zM25 12h1v1h-1zM26 12h1v1h-1zM28 12h1v1h-1zM29 12h1v1h-1zM32 12h1v1h-1zM1 13h1v1h-1zM3 13h1v1h-1zM4 13h1v1h-1zM5 13h1v1h-1zM7 13h1v1h-1zM8 13h1v1h-1zM9 13h1v1h-1zM10 13h1v1h-1zM13 13h1v1h-1zM14 13h1v1h-1zM18 13h1v1h-1zM19 13h1v1h-1zM20 13h1v1h-1zM21 13h1v1h-1zM27 13h1v1h-1zM30 13h1v1h-1zM1 14h1v1h-1zM4 14h1v1h-1zM5 14h1v1h-1zM6 14h1v1h-1zM8 14h1v1h-1zM11 14h1v1h-1zM12 14h1v1h-1zM15 14h1v1h-1zM18 14h1v1h-1zM20 14h1v1h-1zM23 14h1v1h-1zM25 14h1v1h-1zM26 14h1v1h-1zM27 14h1v1h-1zM31 14h1v1h-1zM1 15h1v1h-1zM3 15h1v1h-1zM5 15h1v1h-1zM7 15h1v1h-1zM9 15h1v1h-1zM10 15h1v1h-1zM13 15h1v1h-1zM14 15h1v1h-1zM15 15h1v1h-1zM16 15h1v1h-1zM17 15h1v1h-1zM21 15h1v1h-1zM22 15h1v1h-1zM25 15h1v1h-1zM26 15h1v1h-1zM27 15h1v1h-1zM28 15h1v1h-1zM3 16h1v1h-1zM6 16h1v1h-1zM10 16h1v1h-1zM14 16h1v1h-1zM16 16h1v1h-1zM17 16h1v1h-1zM19 16h1v1h-1zM21 16h1v1h-1zM22 16h1v1h-1zM23 16h1v1h-1zM26 16h1v1h-1zM28 16h1v1h-1zM31 16h1v1h-1zM0 17h1v1h-1zM1 17h1v1h-1zM5 17h1v1h-1zM7 17h1v1h-1zM9 17h1v1h-1zM10 17h1v1h-1zM11 17h1v1h-1zM12 17h1v1h-1zM14 17h1v1h-1zM16 17h1v1h-1zM18 17h1v1h-1zM23 17h1v1h-1zM25 17h1v1h-1zM29 17h1v1h-1zM30 17h1v1h-1zM0 18h1v1h-1zM2 18h1v1h-1zM4 18h1v1h-1zM5 18h1v1h-1zM6 18h1v1h-1zM7 18h1v1h-1zM8 18h1v1h-1zM9 18h1v1h-1zM10 18h1v1h-1zM12 18h1v1h-1zM13 18h1v1h-1zM14 18h1v1h-1zM15 18h1v1h-1zM17 18h1v1h-1zM20 18h1v1h-1zM22 18h1v1h-1zM23 18h1v1h-1zM24 18h1v1h-1zM27 18h1v1h-1zM29 18h1v1h-1zM31 18h1v1h-1zM1 19h1v1h-1zM2 19h1v1h-1zM4 19h1v1h-1zM7 19h1v1h-1zM11 19h1v1h-1zM14 19h1v1h-1zM17 19h1v1h-1zM18 19h1v1h-1zM21 19h1v1h-1zM22 19h1v1h-1zM23 19h1v1h-1zM25 19h1v1h-1zM27 19h1v1h-1zM32 19h1v1h-1zM0 20h1v1h-1zM2 20h1v1h-1zM5 20h1v1h-1zM6 20h1v1h-1zM7 20h1v1h-1zM8 20h1v1h-1zM9 20h1v1h-1zM13 20h1v1h-1zM14 20h1v1h-1zM15 20h1v1h-1zM18 20h1v1h-1zM19 20h1v1h-1zM20 20h1v1h-1zM22 20h1v1h-1zM26 20h1v1h-1zM27 20h1v1h-1zM28 20h1v1h-1zM29 20h1v1h-1zM32 20h1v1h-1zM0 21h1v1h-1zM1 21h1v1h-1zM2 21h1v1h-1zM3 21h1v1h-1zM8 21h1v1h-1zM9 21h1v1h-1zM10 21h1v1h-1zM16 21h1v1h-1zM19 21h1v1h-1zM22 21h1v1h-1zM23 21h1v1h-1zM25 21h1v1h-1zM27 21h1v1h-1zM31 21h1v1h-1zM3 22h1v1h-1zM5 22h1v1h-1zM6 22h1v1h-1zM7 22h1v1h-1zM8 22h1v1h-1zM10 22h1v1h-1zM12 22h1v1h-1zM13 22h1v1h-1zM16 22h1v1h-1zM17 22h1v1h-1zM19 22h1v1h-1zM21 22h1v1h-1zM22 22h1v1h-1zM23 22h1v1h-1zM31 22h1v1h-1zM3 23h1v1h-1zM4 23h1v1h-1zM8 23h1v1h-1zM12 23h1v1h-1zM13 23h1v1h-1zM14 23h1v1h-1zM17 23h1v1h-1zM18 23h1v1h-1zM19 23h1v1h-1zM20 23h1v1h-1zM21 23h1v1h-1zM24 23h1v1h-1zM25 23h1v1h-1zM26 23h1v1h-1zM27 23h1v1h-1zM28 23h1v1h-1zM31 23h1v1h-1zM0 24h1v1h-1zM1 24h1v1h-1zM2 24h1v1h-1zM5 24h1v1h-1zM6 24h1v1h-1zM7 24h1v1h-1zM9 24h1v1h-1zM11 24h1v1h-1zM13 24h1v1h-1zM15 24h1v1h-1zM17 24h1v1h-1zM20 24h1v1h-1zM21 24h1v1h-1zM22 24h1v1h-1zM24 24h1v1h-1zM25 24h1v1h-1zM26 24h1v1h-1zM27 24h1v1h-1zM28 24h1v1h-1zM31 24h1v1h-1zM32 24h1v1h-1zM8 25h1v1h-1zM9 25h1v1h-1zM10 25h1v1h-1zM11 25h1v1h-1zM13 25h1v1h-1zM15 25h1v1h-1zM17 25h1v1h-1zM18 25h1v1h-1zM24 25h1v1h-1zM28 25h1v1h-1zM30 25h1v1h-1zM0 26h1v1h-1zM1 26h1v1h-1zM2 26h1v1h-1zM3 26h1v1h-1zM4 26h1v1h-1zM5 26h1v1h-1zM6 26h1v1h-1zM8 26h1v1h-1zM14 26h1v1h-1zM15 26h1v1h-1zM16 26h1v1h-1zM18 26h1v1h-1zM20 26h1v1h-1zM21 26h1v1h-1zM24 26h1v1h-1zM26 26h1v1h-1zM28 26h1v1h-1zM29 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM10 27h1v1h-1zM11 27h1v1h-1zM12 27h1v1h-1zM15 27h1v1h-1zM19 27h1v1h-1zM20 27h1v1h-1zM21 27h1v1h-1zM22 27h1v1h-1zM24 27h1v1h-1zM28 27h1v1h-1zM32 27h1v1h-1zM0 28h1v1h-1zM2 28h1v1h-1zM3 28h1v1h-1zM4 28h1v1h-1zM6 28h1v1h-1zM8 28h1v1h-1zM13 28h1v1h-1zM16 28h1v1h-1zM20 28h1v1h-1zM22 28h1v1h-1zM24 28h1v1h-1zM25 28h1v1h-1zM26 28h1v1h-1zM27 28h1v1h-1zM28 28h1v1h-1zM29 28h1v1h-1zM31 28h1v1h-1zM32 28h1v1h-1zM0 29h1v1h-1zM2 29h1v1h-1zM3 29h1v1h-1zM4 29h1v1h-1zM6 29h1v1h-1zM10 29h1v1h-1zM14 29h1v1h-1zM18 29h1v1h-1zM19 29h1v1h-1zM20 29h1v1h-1zM21 29h1v1h-1zM22 29h1v1h-1zM24 29h1v1h-1zM26 29h1v1h-1zM27 29h1v1h-1zM28 29h1v1h-1zM0 30h1v1h-1zM2 30h1v1h-1zM3 30h1v1h-1zM4 30h1v1h-1zM6 30h1v1h-1zM9 30h1v1h-1zM10 30h1v1h-1zM13 30h1v1h-1zM15 30h1v1h-1zM20 30h1v1h-1zM21 30h1v1h-1zM22 30h1v1h-1zM24 30h1v1h-1zM26 30h1v1h-1zM27 30h1v1h-1zM28 30h1v1h-1zM30 30h1v1h-1zM0 31h1v1h-1zM6 31h1v1h-1zM10 31h1v1h-1zM11 31h1v1h-1zM12 31h1v1h-1zM15 31h1v1h-1zM16 31h1v1h-1zM17 31h1v1h-1zM18 31h1v1h-1zM21 31h1v1h-1zM23 31h1v1h-1zM26 31h1v1h-1zM29 31h1v1h-1zM0 32h1v1h-1zM1 32h1v1h-1zM2 32h1v1h-1zM3 32h1v1h-1zM4 32h1v1h-1zM5 32h1v1h-1zM6 32h1v1h-1zM8 32h1v1h-1zM10 32h1v1h-1zM11 32h1v1h-1zM12 32h1v1h-1zM14 32h1v1h-1zM16 32h1v1h-1zM17 32h1v1h-1zM19 32h1v1h-1zM20 32h1v1h-1zM21 32h1v1h-1zM23 32h1v1h-1zM24 32h1v1h-1zM25 32h1v1h-1zM29 32h1v1h-1zM32 32h1v1h-1z" fill="#16223D"/></svg></div>
+  </div>
+  <aside class="notes">Now switch to the browser and demo live, step by step, following the lab guide. Walk around the room: common problems are sign-in, YouTube links without captions and scanned PDFs.</aside>
+</section>
+
+<!-- 20 -->
+<section class="slide title-slide">
+  <span class="kicker">Thank you</span>
+  <h1>Build one notebook a week.</h1>
+  <p class="lede">Start with next week's chapter. In a month you'll have a library of verified, reusable teaching material.</p>
+  <p class="hand" style="font-size:44px">Questions?</p>
+  <aside class="notes">Open the floor to questions. Remind everyone the lab guide link stays available for practice after the workshop.</aside>
+</section>
+
+</main>
+
+<div class="notesPanel" id="notesPanel" hidden></div>
+<nav class="ctrl" aria-label="Slide controls">
+  <button type="button" id="prevBtn" aria-label="Previous slide">◀</button>
+  <button type="button" id="nextBtn" aria-label="Next slide">▶</button>
+  <button type="button" id="notesBtn" title="Speaker notes (N)">Notes</button>
+  <button type="button" id="fsBtn" title="Full screen (F)">Full screen</button>
+</nav>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var cur=0, notesOn=false;
+  slides.forEach(function(s,i){var p=document.createElement('span');p.className='pg';p.textContent=(i+1)+' / '+slides.length;s.appendChild(p);});
+
+  function fit(){
+    var s=Math.min(window.innerWidth/1330,window.innerHeight/760);
+    slides.forEach(function(el){el.style.transform='scale('+s+')';});
+  }
+  function show(i){
+    cur=Math.max(0,Math.min(slides.length-1,i));
+    slides.forEach(function(el,j){el.classList.toggle('on',j===cur);el.setAttribute('aria-hidden',j===cur?'false':'true');});
+    document.getElementById('prog').style.width=((cur+1)/slides.length*100)+'%';
+    var n=slides[cur].querySelector('.notes');
+    document.getElementById('notesPanel').innerHTML='<b>Notes · slide '+(cur+1)+'</b><br>'+(n?n.innerHTML:'');
+    try{history.replaceState(null,'','#s'+(cur+1))}catch(e){}
+  }
+  function toggleNotes(){notesOn=!notesOn;document.getElementById('notesPanel').hidden=!notesOn;}
+  function fullscreen(){
+    try{
+      if(document.fullscreenElement){document.exitFullscreen();}
+      else{var r=document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();if(r&&r.catch)r.catch(function(){});}
+    }catch(e){}
+  }
+  document.getElementById('prevBtn').onclick=function(){show(cur-1)};
+  document.getElementById('nextBtn').onclick=function(){show(cur+1)};
+  document.getElementById('notesBtn').onclick=toggleNotes;
+  document.getElementById('fsBtn').onclick=fullscreen;
+  document.addEventListener('keydown',function(e){
+    var k=e.key;
+    if(k==='ArrowRight'||k==='PageDown'||k===' '||k==='Enter'){e.preventDefault();show(cur+1);}
+    else if(k==='ArrowLeft'||k==='PageUp'||k==='Backspace'){e.preventDefault();show(cur-1);}
+    else if(k==='Home'){show(0);}else if(k==='End'){show(slides.length-1);}
+    else if(k==='n'||k==='N'){toggleNotes();}
+    else if(k==='f'||k==='F'){fullscreen();}
+  });
+  var tx=null;
+  document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX},{passive:true});
+  document.addEventListener('touchend',function(e){if(tx===null)return;var dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)show(cur+(dx<0?1:-1));tx=null;});
+  window.addEventListener('resize',fit);
+
+
+  var m=/^#s(\d+)$/.exec(location.hash);
+  fit(); show(m?parseInt(m[1],10)-1:0);
+})();
+</script>

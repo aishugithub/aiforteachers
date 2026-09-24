@@ -1,0 +1,474 @@
+<title>NotebookLM Hands-On Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Caveat:wght@600&display=swap">
+<style>
+:root{
+  --paper:#F5F8FC; --sheet:#FFFFFF; --rule:#DDE6F2; --margin:#E0676B;
+  --ink:#16223D; --ink2:#4B5A7A; --blue:#2A54C8; --blue-soft:#E4ECFD;
+  --hl:#FFE45C; --hl-ink:#16223D; --green:#1E8A4C; --green-soft:#DDF5E6;
+  --warn:#B4541A; --warn-soft:#FDEBDD; --line:#D3DDEB;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --hand:"Caveat", "Comic Sans MS", cursive;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#0F1628; --sheet:#172038; --rule:#1E2944; --margin:#C9575B;
+    --ink:#E6ECF8; --ink2:#A7B4D0; --blue:#8FAAFF; --blue-soft:#1F2C52;
+    --green:#6FD99A; --green-soft:#153826; --warn:#F2A26B; --warn-soft:#3A2415; --line:#2A3657;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#0F1628; --sheet:#172038; --rule:#1E2944; --margin:#C9575B;
+  --ink:#E6ECF8; --ink2:#A7B4D0; --blue:#8FAAFF; --blue-soft:#1F2C52;
+  --green:#6FD99A; --green-soft:#153826; --warn:#F2A26B; --warn-soft:#3A2415; --line:#2A3657;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.6 var(--body)}
+.wrap{max-width:880px;margin:0 auto;padding-inline:20px;padding-block:0 80px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.7rem;font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.2rem;font-weight:600}
+p{margin:0}
+a{color:var(--blue)}
+mark{background:linear-gradient(100deg,transparent 2%,var(--hl) 4%,var(--hl) 96%,transparent 98%);color:var(--hl-ink);padding:0 .15em}
+code,kbd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--blue-soft);padding:.1em .35em;border-radius:4px}
+.eyebrow{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--blue)}
+.hand{font-family:var(--hand);font-size:1.45rem;color:var(--margin);line-height:1.1}
+
+/* header */
+header.top{padding-block:40px 28px;border-bottom:2px solid var(--rule);display:grid;gap:14px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--ink2);font-size:.95rem}
+.meta span b{color:var(--ink)}
+.progress{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);padding-block:10px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px}
+.bar{flex:1;height:10px;background:var(--rule);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--green);transition:width .3s}
+.progress small{font-variant-numeric:tabular-nums;color:var(--ink2);white-space:nowrap}
+.theme-btn,.reset-btn{font:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:8px;padding:4px 10px;cursor:pointer}
+
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+nav.toc a{font-size:.9rem;text-decoration:none;border:1px solid var(--line);background:var(--sheet);padding:4px 12px;border-radius:99px;color:var(--ink)}
+nav.toc a:hover{border-color:var(--blue);color:var(--blue)}
+
+section{padding-top:48px;display:grid;gap:18px}
+.lede{color:var(--ink2);max-width:65ch}
+
+/* screen map */
+.screen{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:10px;background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:12px}
+.pane{border:1.5px dashed var(--line);border-radius:8px;padding:12px;display:grid;gap:6px;align-content:start;min-height:130px}
+.pane b{font-family:var(--display);font-size:1.05rem}
+.pane small{color:var(--ink2);line-height:1.4}
+@media (max-width:620px){.screen{grid-template-columns:1fr}.pane{min-height:0}}
+
+/* steps */
+ol.steps{list-style:none;margin:0;padding:0;display:grid;gap:14px;counter-reset:s}
+.step{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:18px 18px 18px 64px;position:relative;counter-increment:s;display:grid;gap:10px}
+.step::before{content:counter(s);position:absolute;left:18px;top:16px;width:32px;height:32px;border-radius:50%;background:var(--blue-soft);color:var(--blue);font:800 1rem/32px var(--display);text-align:center}
+.step.done{border-color:var(--green);background:linear-gradient(var(--green-soft),var(--green-soft)) left/5px 100% no-repeat,var(--sheet)}
+.step.done::before{content:"✓";background:var(--green);color:var(--sheet)}
+.step-head{display:flex;justify-content:space-between;align-items:start;gap:12px}
+.step label.chk{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--ink2);cursor:pointer;white-space:nowrap}
+.step input[type=checkbox]{width:18px;height:18px;accent-color:var(--green)}
+.step ul,.step ol{margin:0;padding-left:1.2em;display:grid;gap:4px}
+.see{font-size:.95rem;color:var(--ink2);border-left:3px solid var(--rule);padding-left:12px}
+.see b{color:var(--ink)}
+.tip{font-size:.95rem;background:var(--blue-soft);border-radius:8px;padding:10px 12px}
+.tip b{color:var(--blue)}
+.caution{font-size:.95rem;background:var(--warn-soft);border-radius:8px;padding:10px 12px}
+.caution b{color:var(--warn)}
+.path{font-weight:700}
+.path::after{content:""}
+
+/* prompt blocks */
+.prompt{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:12px 90px 12px 14px;font-size:.96rem;white-space:pre-wrap}
+.copy{position:absolute;top:8px;right:8px;font:700 .8rem var(--body);border:1px solid var(--blue);color:var(--blue);background:var(--sheet);border-radius:6px;padding:4px 10px;cursor:pointer}
+.copy.ok{border-color:var(--green);color:var(--green)}
+.copy:focus-visible,.theme-btn:focus-visible,.reset-btn:focus-visible,nav.toc a:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+.cat{display:grid;gap:10px}
+.cat h3{display:flex;align-items:baseline;gap:10px}
+.cat h3 small{font:400 .9rem var(--body);color:var(--ink2)}
+
+/* sample source */
+.source{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:22px 22px 22px 40px;position:relative;
+  background-image:linear-gradient(90deg,transparent 26px,var(--margin) 26px,var(--margin) 28px,transparent 28px),repeating-linear-gradient(var(--sheet) 0 27px,var(--rule) 27px 28px)}
+.source .copy{top:14px;right:14px}
+.source h3{margin-bottom:8px}
+.source p{line-height:28px;margin-bottom:0}
+.source p+p{margin-top:0}
+
+/* challenges */
+.challenges{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.ch{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:8px;align-content:start}
+.ch .lvl{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green)}
+
+/* tables & faq */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--sheet)}
+table{border-collapse:collapse;width:100%;font:inherit;font-size:.95rem}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--display);font-weight:600;background:var(--blue-soft)}
+tr:last-child td{border-bottom:0}
+details{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+details summary{cursor:pointer;font-weight:700}
+details p{margin-top:8px;color:var(--ink2)}
+.faq{display:grid;gap:10px}
+.checklist{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.checklist li{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:10px 14px 10px 44px;position:relative}
+.checklist li::before{content:"";position:absolute;left:14px;top:13px;width:18px;height:18px;border:2px solid var(--margin);border-radius:4px}
+footer{margin-top:56px;padding-top:20px;border-top:2px solid var(--rule);color:var(--ink2);font-size:.9rem;display:grid;gap:6px}
+@media (max-width:520px){
+  body{font-size:16px}
+  .step{padding:16px 14px 16px 54px}
+  .step::before{left:12px}
+  .step-head{flex-direction:column}
+  .prompt{padding:44px 12px 12px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{.progress,.copy,.theme-btn,.reset-btn,nav.toc{display:none}.step{break-inside:avoid}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">Teacher Workshop · Hands-on Lab</span>
+    <h1>NotebookLM Hands-On Lab</h1>
+    <p class="lede">Follow these steps along with the live demo, then come back to them whenever you want to try on your own. Tick each step as you finish it. Your ticks are saved in this browser.</p>
+    <div class="meta">
+      <span><b>You need:</b> a Google account and a laptop or phone</span>
+      <span><b>Time:</b> about 45 minutes</span>
+      <span><b>Website:</b> <a href="https://notebooklm.google.com" target="_blank" rel="noopener">notebooklm.google.com</a></span>
+    </div>
+    <nav class="toc" aria-label="Sections">
+      <a href="#map">Screen map</a><a href="#lab">Guided steps</a><a href="#sample">Sample source</a><a href="#prompts">Prompt library</a><a href="#practice">Practice challenges</a><a href="#safe">Safe use</a><a href="#help">Help &amp; FAQ</a>
+    </nav>
+  </header>
+
+  <div class="progress" role="status">
+    <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+    <small id="progTxt">0 of 14 steps done</small>
+    <button class="reset-btn" id="resetBtn" type="button">Reset</button>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch light or dark theme">Theme</button>
+  </div>
+
+  <section id="map">
+    <span class="eyebrow">Before you start</span>
+    <h2>The NotebookLM screen in three parts</h2>
+    <p class="lede">Every notebook has the same three panels. On a phone they show as three tabs at the bottom.</p>
+    <div class="screen" aria-label="Diagram of the three NotebookLM panels">
+      <div class="pane"><b>Sources</b><small>Left panel. The material you upload: PDFs, links, videos, notes. The AI answers only from these.</small></div>
+      <div class="pane"><b>Chat</b><small>Middle panel. Ask questions about your sources. Every answer has numbered citations you can click to see the exact line.</small></div>
+      <div class="pane"><b>Studio</b><small>Right panel. One-click teaching material: audio and video overviews, mind maps, reports, quizzes, flashcards, slides.</small></div>
+    </div>
+    <p class="hand">Sources in → answers and materials out.</p>
+  </section>
+
+  <section id="lab">
+    <span class="eyebrow">Part A · Follow the demo</span>
+    <h2>Guided steps</h2>
+    <p class="lede">Menu names change as Google updates the tool. If a button looks slightly different, look for the closest match in the same panel.</p>
+
+    <ol class="steps" id="steps">
+      <li class="step" data-id="s1">
+        <div class="step-head"><h3>Open NotebookLM and sign in</h3><label class="chk"><input type="checkbox" id="c-s1"> Done</label></div>
+        <ul>
+          <li>Go to <a href="https://notebooklm.google.com" target="_blank" rel="noopener">notebooklm.google.com</a> in Chrome, Edge or Safari.</li>
+          <li>Sign in with your Google account. A school Google Workspace account works if your school admin has switched NotebookLM on.</li>
+          <li>On a phone, you can install the <b>NotebookLM</b> app from the Play Store or App Store instead.</li>
+        </ul>
+        <p class="see"><b>You should see:</b> a home page with a <b>Create new</b> button and some featured notebooks from Google.</p>
+      </li>
+
+      <li class="step" data-id="s2">
+        <div class="step-head"><h3>Create your first notebook</h3><label class="chk"><input type="checkbox" id="c-s2"> Done</label></div>
+        <ul>
+          <li>Click <span class="path">Create new</span>. A window opens asking for sources. Close it for now or keep it open for the next step.</li>
+          <li>Click the title <i>Untitled notebook</i> at the top and rename it, for example <code>Class 7 Science – Water Cycle</code>.</li>
+        </ul>
+        <p class="tip"><b>Tip:</b> Make one notebook per chapter or unit. Small, focused notebooks give sharper answers than one huge notebook for the whole year.</p>
+      </li>
+
+      <li class="step" data-id="s3">
+        <div class="step-head"><h3>Add sources</h3><label class="chk"><input type="checkbox" id="c-s3"> Done</label></div>
+        <p>Click <span class="path">+ Add</span> in the Sources panel and try at least two of these:</p>
+        <ul>
+          <li><b>Copied text:</b> choose <i>Copied text</i> and paste the <a href="#sample">sample source</a> from this page.</li>
+          <li><b>PDF:</b> upload a textbook chapter. NCERT chapters are free to download from <a href="https://ncert.nic.in/textbook.php" target="_blank" rel="noopener">ncert.nic.in/textbook.php</a>.</li>
+          <li><b>YouTube:</b> paste the link to a public educational video that has captions.</li>
+          <li><b>Website:</b> paste the link to any article, such as a Wikipedia page on the topic.</li>
+          <li><b>Google Drive:</b> pick your own Google Docs or Slides lesson plans.</li>
+        </ul>
+        <p class="see"><b>You should see:</b> each source listed on the left with a tick box. A short summary of all sources appears in the Chat panel.</p>
+      </li>
+
+      <li class="step" data-id="s4">
+        <div class="step-head"><h3>Read the summary and control which sources are used</h3><label class="chk"><input type="checkbox" id="c-s4"> Done</label></div>
+        <ul>
+          <li>Read the auto-generated summary and the suggested questions under it.</li>
+          <li>Click on a source name to open its <b>source guide</b>: a summary and key topics for that one file.</li>
+          <li>Untick a source's box to leave it out of answers. Tick it again to bring it back.</li>
+        </ul>
+        <p class="tip"><b>Tip:</b> Unticking is useful when you want an answer from the textbook only, not from the YouTube video.</p>
+      </li>
+
+      <li class="step" data-id="s5">
+        <div class="step-head"><h3>Ask questions and check citations</h3><label class="chk"><input type="checkbox" id="c-s5"> Done</label></div>
+        <p>Type these into the chat box, one at a time:</p>
+        <div class="prompt">List the 5 most important concepts in these sources, with a one-line explanation of each for a Class 7 student.<button class="copy" type="button">Copy</button></div>
+        <div class="prompt">What misconceptions do students commonly have about this topic? Use only the sources.<button class="copy" type="button">Copy</button></div>
+        <ul>
+          <li>Hover over or click a small <b>number</b> in the answer. The exact line in the source opens on the left.</li>
+          <li>Now ask something that is <b>not</b> in your sources, e.g. <i>Who won the 2011 Cricket World Cup?</i> Notice how it tells you the sources don't cover it.</li>
+        </ul>
+        <p class="see"><b>Why this matters:</b> you can verify every claim in seconds before it reaches your students.</p>
+      </li>
+
+      <li class="step" data-id="s6">
+        <div class="step-head"><h3>Set the chat style and output language</h3><label class="chk"><input type="checkbox" id="c-s6"> Done</label></div>
+        <ul>
+          <li>Click the <b>settings / configure</b> icon at the top of the Chat panel.</li>
+          <li>Try <b>Learning guide</b>: the AI asks the student guiding questions instead of giving the answer straight away.</li>
+          <li>Or choose <b>Custom</b> and type a role, for example: <i>You are a patient Class 7 science tutor. Use simple English and one everyday example.</i></li>
+          <li>To get answers and materials in Tamil, Hindi or another language: open <b>Settings → Output language</b> in the top-right menu.</li>
+        </ul>
+      </li>
+
+      <li class="step" data-id="s7">
+        <div class="step-head"><h3>Save useful answers as notes</h3><label class="chk"><input type="checkbox" id="c-s7"> Done</label></div>
+        <ul>
+          <li>Under any good answer, click <span class="path">Save to note</span>. It appears in the Studio panel under Notes.</li>
+          <li>Open a note to edit it, or add your own note with <span class="path">+ Add note</span>.</li>
+          <li>A note can be turned into a source with <span class="path">Convert to source</span>, so your own ideas become part of the notebook.</li>
+        </ul>
+      </li>
+
+      <li class="step" data-id="s8">
+        <div class="step-head"><h3>Make a mind map</h3><label class="chk"><input type="checkbox" id="c-s8"> Done</label></div>
+        <ul>
+          <li>In <b>Studio</b>, click <span class="path">Mind Map</span>.</li>
+          <li>Click on any branch to expand it. Click a node to ask the chat about that sub-topic.</li>
+          <li>Download it as an image to project in class or paste into a worksheet.</li>
+        </ul>
+        <p class="tip"><b>Classroom idea:</b> Show only the main branches, and ask students to predict what comes under each before you expand them.</p>
+      </li>
+
+      <li class="step" data-id="s9">
+        <div class="step-head"><h3>Create a study guide or other report</h3><label class="chk"><input type="checkbox" id="c-s9"> Done</label></div>
+        <ul>
+          <li>In <b>Studio</b>, click <span class="path">Reports</span>. Pick <b>Study guide</b>, <b>Briefing doc</b>, <b>FAQ</b>, <b>Timeline</b> or one of the suggested formats.</li>
+          <li>Use the <b>pencil / customise</b> option to create your own format. Try the prompt below.</li>
+        </ul>
+        <div class="prompt">Create a one-page revision sheet for Class 7 students: 8 key terms with simple definitions, 3 diagrams described in words, and 5 short-answer questions with answers at the end.<button class="copy" type="button">Copy</button></div>
+      </li>
+
+      <li class="step" data-id="s10">
+        <div class="step-head"><h3>Generate a quiz and flashcards</h3><label class="chk"><input type="checkbox" id="c-s10"> Done</label></div>
+        <ul>
+          <li>In <b>Studio</b>, click <span class="path">Quiz</span>. Use the pencil icon to set the <b>number of questions</b> and <b>difficulty</b>, and add a focus, e.g. <i>Focus on evaporation and condensation</i>.</li>
+          <li>Click <span class="path">Flashcards</span> the same way for revision cards.</li>
+          <li>Take the quiz yourself. Each wrong answer shows an explanation linked to the source.</li>
+        </ul>
+        <p class="caution"><b>Check first:</b> read every question before you use it in class. Remove any that are unclear or off-syllabus.</p>
+      </li>
+
+      <li class="step" data-id="s11">
+        <div class="step-head"><h3>Make an Audio Overview (the "podcast")</h3><label class="chk"><input type="checkbox" id="c-s11"> Done</label></div>
+        <ul>
+          <li>In <b>Studio</b>, click the pencil on <span class="path">Audio Overview</span> to customise it before generating.</li>
+          <li>Pick a format: <b>Deep dive</b> (conversation), <b>Brief</b> (short), <b>Critique</b> or <b>Debate</b>. Pick a length and a language.</li>
+          <li>Paste instructions like the one below, then click <b>Generate</b>. It takes a few minutes; you can keep working meanwhile.</li>
+          <li>While it plays, try <b>Interactive mode (Join)</b>: interrupt the two hosts and ask them a question with your microphone.</li>
+        </ul>
+        <div class="prompt">The listeners are Class 7 students in Chennai. Explain in simple words, use one everyday example from Chennai weather, and end with three questions for the students to think about.<button class="copy" type="button">Copy</button></div>
+      </li>
+
+      <li class="step" data-id="s12">
+        <div class="step-head"><h3>Try Video Overview, Slide Deck and Infographic</h3><label class="chk"><input type="checkbox" id="c-s12"> Done</label></div>
+        <ul>
+          <li><span class="path">Video Overview</span>: a narrated slideshow of your sources. Choose a visual style and add instructions the same way as audio.</li>
+          <li><span class="path">Slide Deck</span>: ready-made presentation slides you can download and edit.</li>
+          <li><span class="path">Infographic</span>: a one-page visual summary for a notice board or worksheet.</li>
+        </ul>
+        <p class="tip"><b>Tip:</b> These take longer to generate. Start one, then carry on with the next step.</p>
+      </li>
+
+      <li class="step" data-id="s13">
+        <div class="step-head"><h3>Find new sources with Discover or Deep Research</h3><label class="chk"><input type="checkbox" id="c-s13"> Done</label></div>
+        <ul>
+          <li>In the Sources panel, use the <b>search the web / Discover</b> box. Type a topic, e.g. <i>water conservation projects for school students in India</i>.</li>
+          <li>Choose <b>Fast research</b> for a quick list or <b>Deep research</b> for a full report with sources.</li>
+          <li>Read the suggestions and import only the ones from sites you trust.</li>
+        </ul>
+      </li>
+
+      <li class="step" data-id="s14">
+        <div class="step-head"><h3>Share the notebook</h3><label class="chk"><input type="checkbox" id="c-s14"> Done</label></div>
+        <ul>
+          <li>Click <span class="path">Share</span> at the top right.</li>
+          <li>Add a colleague's email as <b>Editor</b> to plan together, or as <b>Viewer</b> to let them use it.</li>
+          <li>Where your account allows, choose <b>Chat only</b> so students can ask questions but not see or change the sources, or switch on <b>Anyone with the link</b>.</li>
+        </ul>
+        <p class="caution"><b>Before sharing with students:</b> follow your school's rules and Google's age requirements. Never put student personal data into a shared notebook.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section id="sample">
+    <span class="eyebrow">Use this in step 3</span>
+    <h2>Sample source to paste</h2>
+    <p class="lede">An original short text written for this workshop. Copy it and add it as <b>Copied text</b> if you don't have your own material with you.</p>
+    <div class="source">
+      <button class="copy" type="button" data-target="sampleText">Copy text</button>
+      <div id="sampleText">
+        <h3>The Water Cycle – Class 7 Notes</h3>
+        <p>The water on Earth is always moving. The same water has been going round and round for millions of years. This continuous movement of water between the land, the oceans and the air is called the water cycle.</p>
+        <p><b>Evaporation.</b> The Sun heats water in oceans, lakes, rivers and even puddles. The water changes into invisible water vapour and rises into the air. Wet clothes drying on a terrace in Chennai is evaporation at work. Evaporation happens faster when it is hot, windy and dry.</p>
+        <p><b>Transpiration.</b> Plants take up water through their roots and release water vapour through tiny pores in their leaves called stomata. A large tree can release hundreds of litres of water in a single day.</p>
+        <p><b>Condensation.</b> As water vapour rises, it cools. Cool vapour turns back into tiny droplets of liquid water. Millions of these droplets together form clouds. The drops on the outside of a cold glass of water also come from condensation, not from water leaking through the glass.</p>
+        <p><b>Precipitation.</b> When the droplets in a cloud join and become too heavy, they fall as rain, snow or hail. Tamil Nadu gets most of its rain from the north-east monsoon between October and December.</p>
+        <p><b>Collection.</b> Rainwater flows into rivers, lakes and the sea, or soaks into the ground to become groundwater. Wells and borewells draw on this groundwater. Rainwater harvesting helps refill it.</p>
+        <p><b>Common misconceptions.</b> Many students think clouds are made of water vapour or smoke. Clouds are actually made of liquid water droplets or ice crystals. Some students also think the Sun "sucks up" water; in fact the Sun only provides heat energy.</p>
+        <p><b>Why it matters.</b> Only about 3% of Earth's water is fresh water, and most of that is frozen in ice. Saving water and harvesting rain protect the small share we can use.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="prompts">
+    <span class="eyebrow">Copy · paste · adapt</span>
+    <h2>Prompt library for teachers</h2>
+    <p class="lede">Paste these into the chat, or into the customise box of a Studio tool. Change the class, subject and details to suit you.</p>
+
+    <div class="cat">
+      <h3>Lesson planning <small>turn material into a plan</small></h3>
+      <div class="prompt">Create a 40-minute lesson plan from these sources for Class [X]: learning objectives, a 5-minute warm-up, main activity, pair work, and a 5-minute exit ticket.<button class="copy" type="button">Copy</button></div>
+      <div class="prompt">Suggest 3 hands-on activities using low-cost materials available in an Indian classroom to teach [topic].<button class="copy" type="button">Copy</button></div>
+      <div class="prompt">Which ideas in these sources need prior knowledge? List what students should already know before this lesson.<button class="copy" type="button">Copy</button></div>
+    </div>
+
+    <div class="cat">
+      <h3>Differentiation <small>one topic, many learners</small></h3>
+      <div class="prompt">Explain [concept] at three levels: for a student who is struggling, for an average student, and for an advanced student who wants a challenge.<button class="copy" type="button">Copy</button></div>
+      <div class="prompt">Rewrite the key points of this chapter in very simple English with short sentences, for students who are still learning English.<button class="copy" type="button">Copy</button></div>
+      <div class="prompt">Explain the main idea of these sources in Tamil, using an example from daily life.<button class="copy" type="button">Copy</button></div>
+    </div>
+
+    <div class="cat">
+      <h3>Assessment <small>questions and answer keys</small></h3>
+      <div class="prompt">Write 10 multiple-choice questions from these sources. Make the wrong options common student misconceptions. Give the answer key with a one-line reason for each.<button class="copy" type="button">Copy</button></div>
+      <div class="prompt">Create 5 questions at each level of Bloom's taxonomy (remember, understand, apply, analyse, evaluate, create) for this chapter.<button class="copy" type="button">Copy</button></div>
+      <div class="prompt">Create a marking rubric for a 5-mark answer to: "[question]". Show what a 5, 3 and 1-mark answer looks like.<button class="copy" type="button">Copy</button></div>
+    </div>
+
+    <div class="cat">
+      <h3>Student engagement <small>hooks and discussion</small></h3>
+      <div class="prompt">Give me 3 surprising facts or questions from these sources that I can use to start the class and make students curious.<button class="copy" type="button">Copy</button></div>
+      <div class="prompt">Write a short role-play script for 4 students that explains [process] as characters talking to each other.<button class="copy" type="button">Copy</button></div>
+    </div>
+
+    <div class="cat">
+      <h3>Admin and communication <small>save time on paperwork</small></h3>
+      <div class="prompt">From this circular, list every action teachers must take, with deadlines, as a checklist.<button class="copy" type="button">Copy</button></div>
+      <div class="prompt">Write a short, friendly note to parents explaining what students will learn in this unit and how they can help at home.<button class="copy" type="button">Copy</button></div>
+    </div>
+  </section>
+
+  <section id="practice">
+    <span class="eyebrow">Part B · On your own after the workshop</span>
+    <h2>Practice challenges</h2>
+    <p class="lede">Try these in order. Each one takes 15–30 minutes and leaves you with something you can use in class next week.</p>
+    <div class="challenges">
+      <div class="ch"><span class="lvl">Challenge 1 · Starter</span><h3>Your next lesson</h3><p>Make a notebook for the chapter you teach next. Add the textbook PDF and one video. Generate a mind map and a 10-question quiz. Check every question.</p></div>
+      <div class="ch"><span class="lvl">Challenge 2 · Builder</span><h3>Three levels, one topic</h3><p>Use the differentiation prompts to create three versions of one explanation. Make an Audio Overview in your students' home language for the group that needs extra support.</p></div>
+      <div class="ch"><span class="lvl">Challenge 3 · Expert</span><h3>A revision notebook for students</h3><p>Build a notebook for exam revision, set the chat to Learning guide, and share it as chat-only with one class (if school policy allows). Collect their questions and use them to plan a review lesson.</p></div>
+    </div>
+  </section>
+
+  <section id="safe">
+    <span class="eyebrow">Use it responsibly</span>
+    <h2>Safe-use checklist</h2>
+    <ul class="checklist">
+      <li><b>No personal data.</b> Don't upload students' names, marks, phone numbers, health or family details. India's Digital Personal Data Protection Act, 2023 applies to this data.</li>
+      <li><b>Verify before you teach.</b> Click the citations. NotebookLM makes fewer mistakes because it uses your sources, but it can still misread them.</li>
+      <li><b>Respect copyright.</b> Upload only material you are allowed to use: your own notes, free textbooks like NCERT, open resources.</li>
+      <li><b>Follow school policy</b> and Google's age rules before sharing notebooks with students.</li>
+      <li><b>Keep your judgement.</b> The AI drafts; you decide what is right for your class.</li>
+      <li><b>Tell students when material was AI-generated</b> and teach them to check the sources too.</li>
+    </ul>
+  </section>
+
+  <section id="help">
+    <span class="eyebrow">When you get stuck</span>
+    <h2>Help &amp; FAQ</h2>
+    <div class="faq">
+      <details><summary>Is NotebookLM free?</summary><p>Yes, the basic version is free with any Google account. There are daily limits on chats and generated overviews. Paid plans (Google AI Pro and some Workspace plans) raise the limits. Check notebooklm.google for the current numbers.</p></details>
+      <details><summary>How many sources can I add?</summary><p>On the free plan, up to 50 sources per notebook at the time of writing, and each source can be very long (hundreds of pages). Paid plans allow more.</p></details>
+      <details><summary>My YouTube link won't add.</summary><p>The video must be public and have captions. Try another video, or paste the transcript as copied text.</p></details>
+      <details><summary>My PDF gives poor answers.</summary><p>Scanned PDFs (photos of pages) may not be read well. Use a PDF where you can select the text, or a clearer scan.</p></details>
+      <details><summary>The answer is wrong or strange.</summary><p>Click the citation to see what the source actually says. Rephrase the question, untick unrelated sources, or add a better source.</p></details>
+      <details><summary>Can I get answers in Tamil or Hindi?</summary><p>Yes. Ask in that language, or set <b>Settings → Output language</b>. Audio and video overviews can also be generated in many Indian languages.</p></details>
+      <details><summary>Does Google use my uploads to train its AI?</summary><p>Google states that NotebookLM does not use your sources or chats to train its models for personal accounts, and Workspace for Education accounts have added data protections. Still, avoid uploading anything confidential.</p></details>
+      <details><summary>I can't see a feature shown in the workshop.</summary><p>Google releases features gradually and renames buttons. Refresh the page, update the app, or check your school account settings with your admin.</p></details>
+    </div>
+
+    <h3 style="margin-top:12px">Limits at a glance</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>What</th><th>Free plan (approx., may change)</th></tr></thead>
+        <tbody>
+          <tr><td>Notebooks</td><td>Up to 100</td></tr>
+          <tr><td>Sources per notebook</td><td>Up to 50</td></tr>
+          <tr><td>Size of one source</td><td>Up to about 500,000 words or 200 MB</td></tr>
+          <tr><td>Chats and Studio outputs</td><td>Daily limits apply; paid plans give more</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <p class="hand">Keep experimenting. Build one notebook a week.</p>
+    <p>Prepared for the NotebookLM workshop for school teachers. Features and limits described here were current at the time of writing and may change as Google updates NotebookLM.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var KEY='nblm-lab-steps', TKEY='nblm-lab-theme';
+  function load(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
+  function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+  var state=load(KEY)||{};
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  function render(){
+    var n=0;
+    steps.forEach(function(li){
+      var id=li.dataset.id, box=li.querySelector('input'), on=!!state[id];
+      box.checked=on; li.classList.toggle('done',on); if(on)n++;
+    });
+    document.getElementById('barFill').style.width=(n/steps.length*100)+'%';
+    document.getElementById('progTxt').textContent=n+' of '+steps.length+' steps done';
+  }
+  steps.forEach(function(li){
+    li.querySelector('input').addEventListener('change',function(e){state[li.dataset.id]=e.target.checked;save(KEY,state);render();});
+  });
+  document.getElementById('resetBtn').addEventListener('click',function(){state={};save(KEY,state);render();});
+  render();
+
+  var t=load(TKEY); if(t)document.documentElement.setAttribute('data-theme',t);
+  document.getElementById('themeBtn').addEventListener('click',function(){
+    var cur=document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    var next=cur==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',next); save(TKEY,next);
+  });
+
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var el=btn.dataset.target?document.getElementById(btn.dataset.target):btn.parentNode;
+      var text=btn.dataset.target?el.innerText.trim():[].filter.call(el.childNodes,function(n){return n!==btn}).map(function(n){return n.textContent}).join('').trim();
+      function ok(){var o=btn.textContent;btn.textContent='Copied';btn.classList.add('ok');setTimeout(function(){btn.textContent=o;btn.classList.remove('ok')},1600);}
+      function fallback(){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent='Press Ctrl+C';}
+      try{navigator.clipboard.writeText(text).then(ok,fallback)}catch(e){fallback()}
+    });
+  });
+})();
+</script>
