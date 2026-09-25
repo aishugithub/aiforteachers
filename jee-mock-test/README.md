@@ -21,7 +21,24 @@ Palette states follow the official instructions: Not Visited, Not Answered, Answ
 
 ## Question bank
 
-The built-in bank (`questions.js`) has 84 **original** practice questions written in JEE Main style (28 per subject, MCQ + numerical) tagged with years 2023–2026 so the filters can be demonstrated. They are not official NTA questions. For real PYQs, import your own file.
+The built-in bank (`questions.js`) has 84 **original** practice questions written in JEE Main style (28 per subject, MCQ + numerical). Each carries a year tag (2023–2026) only so the year filter can be demonstrated. They are **not** official NTA questions and did not appear in those papers. The app says so on the setup page, labels each one "Practice question (year tag …)" in the review and PDF, and prints a notice on the PDF cover. For real PYQs, import your own file.
+
+### How the sample answers were checked
+
+`verify_answers.py` recomputes the 65 calculation-based answers independently (SymPy and plain arithmetic) and confirms each one matches the key stored in `questions.js`:
+
+```
+pip install sympy
+python3 verify_answers.py
+# 65 computed checks, 0 failed
+# 65 answer keys cross-checked, 0 mismatched
+```
+
+The remaining 19 questions test facts or concepts (for example the shape of XeF₄ or the peroxide effect). They cannot be computed and were reviewed by hand against NCERT content. The script lists them so a subject teacher can review them too.
+
+### Marking defaults
+
+Defaults per subject are 20 MCQs + 5 numericals, +4 / −1 in both sections. Coaching-site summaries of recent NTA information bulletins describe this pattern. Check the official bulletin for the session you are preparing for, and change the marking on the setup page if it differs.
 
 ### CSV format
 
@@ -34,6 +51,7 @@ C101,Chemistry,Atomic Structure,2026,NUM,"Angular nodes in a 4d orbital ____.",,
 - `type`: `MCQ` or `NUM` (also accepts `numerical`, `integer`).
 - `answer`: `A`–`D` (or `1`–`4`) for MCQs; a number or a range such as `2.4-2.6` for numericals.
 - `^{..}` gives superscript and `_{..}` subscript. Unicode symbols (², √, π, ⇌) work directly.
+- An optional `source` column (for example `JEE Main 2025, 22 Jan Shift 1`) is printed with each question in the review and PDF. Without it, imported questions show as `JEE Main <year>`.
 - An optional `image` column accepts a `data:` URI or an `https://` URL for figures.
 
 A Google Sheet exported as CSV works. The **Download CSV template** button gives a starter file.
@@ -57,3 +75,4 @@ To put it online, enable GitHub Pages for the repository and point it at the bra
 
 - `index.html`: the whole app (UI, exam engine, scoring, PDF report)
 - `questions.js`: built-in sample bank and schema notes
+- `verify_answers.py`: independent check of the sample answer keys

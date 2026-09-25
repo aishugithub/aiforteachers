@@ -402,6 +402,7 @@ code { font-family: var(--font-num); font-size: .92em; background: #f1f4f8; padd
           <h2>Previous-year papers</h2>
           <p class="hint">Pick one or more years. Questions from every selected year are pooled together.</p>
           <div class="chips" id="yearChips"></div>
+          <p class="note" id="yearNote" hidden>The built-in sample bank uses these years only as tags to demonstrate the filter. Its questions are original practice items, not questions from those papers.</p>
         </div>
 
         <div class="card">
@@ -412,7 +413,7 @@ code { font-family: var(--font-num); font-size: .92em; background: #f1f4f8; padd
 
         <div class="card">
           <h2>Paper pattern and marking</h2>
-          <p class="hint">Defaults follow the current JEE Main pattern: per subject, 20 single-correct MCQs (Section A) and 5 numerical-value questions (Section B), +4 for a correct answer and −1 for a wrong one.</p>
+          <p class="hint">Defaults per subject: 20 single-correct MCQs (Section A) and 5 numerical-value questions (Section B), +4 for a correct answer and −1 for a wrong one in both sections. Check NTA's information bulletin for the session you are preparing for and adjust if it differs.</p>
           <div class="pattern">
             <div class="field"><label class="label" for="inMcq">MCQs per subject</label><div class="mini"><input class="input" id="inMcq" type="number" min="0" max="200"></div></div>
             <div class="field"><label class="label" for="inNum">Numericals per subject</label><div class="mini"><input class="input" id="inNum" type="number" min="0" max="200"></div></div>
@@ -458,7 +459,7 @@ code { font-family: var(--font-num); font-size: .92em; background: #f1f4f8; padd
       <p style="text-align:center;margin-top:-6px">Please read the instructions carefully</p>
       <ol>
         <li>Total duration of this test is <b id="insDur"></b>.</li>
-        <li>The clock is set on the server-style countdown timer in the top right corner of the screen. When the timer reaches zero, the test ends by itself. You do not have to submit it.</li>
+        <li>The countdown timer in the top right corner of the screen shows the time remaining. When it reaches zero, the test is submitted automatically.</li>
         <li>The Question Palette on the right shows the status of each question using one of the following symbols:
           <div class="leg">
             <div><span class="st st-nv">1</span> You have not visited the question yet.</div>
@@ -480,7 +481,7 @@ code { font-family: var(--font-num); font-size: .92em; background: #f1f4f8; padd
     </div>
   </div>
   <div class="ins-foot">
-    <label><input type="checkbox" id="insAgree"> I have read and understood the instructions. All computer hardware allotted to me is in proper working condition. I agree that in case of not adhering to the instructions, I shall be liable to be debarred from this test.</label>
+    <label><input type="checkbox" id="insAgree"> I have read and understood the instructions and am ready to begin this practice test.</label>
     <div class="row" style="gap:8px">
       <button type="button" class="cbt-btn" id="insBack">&lt;&lt; Back to setup</button>
       <button type="button" class="cbt-btn b-save" id="insGo" disabled>I am ready to begin</button>
@@ -587,7 +588,7 @@ code { font-family: var(--font-num); font-size: .92em; background: #f1f4f8; padd
     </div>
     <label class="toggle-line"><input type="checkbox" id="keepSample"> Add to the current bank instead of replacing it</label>
     <div class="err-list" id="bankErr" style="margin-top:10px"></div>
-    <p style="font-size:13.5px;margin:14px 0 6px"><b>CSV columns:</b> <code>id, subject, chapter, year, type, question, option_a, option_b, option_c, option_d, answer, solution</code>. <code>type</code> is <code>MCQ</code> or <code>NUM</code>. For MCQs, <code>answer</code> is A–D; for numericals it is the number (or a range like <code>2.4-2.6</code>). Use <code>^{2}</code> for superscripts and <code>_{2}</code> for subscripts.</p>
+    <p style="font-size:13.5px;margin:14px 0 6px"><b>CSV columns:</b> <code>id, subject, chapter, year, type, question, option_a, option_b, option_c, option_d, answer, solution</code>, plus an optional <code>source</code> such as <code>JEE Main 2025, 22 Jan Shift 1</code> that is printed with each question. <code>type</code> is <code>MCQ</code> or <code>NUM</code>. For MCQs, <code>answer</code> is A–D; for numericals it is the number (or a range like <code>2.4-2.6</code>). Use <code>^{2}</code> for superscripts and <code>_{2}</code> for subscripts.</p>
     <p style="font-size:13.5px;margin:0">The bank is stored in this browser only. Other people using the app need to import the same file.</p>
     <div class="modal-actions">
       <button type="button" class="btn btn-line" id="dlTemplate">Download CSV template</button>
@@ -658,7 +659,9 @@ async function saveFile(filename, data, mime) {
 }
 
 /* ---------- question bank ---------- */
-const SAMPLE = { name: 'Built-in sample bank', sample: true, questions: (window.JEE_SAMPLE_BANK || []).slice() };
+const SAMPLE = { name: 'Built-in sample bank', sample: true, questions: (window.JEE_SAMPLE_BANK || []).map(q => Object.assign({}, q, { origin: 'sample' })) };
+/* Never present a practice question as a real PYQ: sample items show their year only as a tag. */
+const srcLabel = q => q.source ? q.source : q.origin === 'sample' ? `Practice question (year tag ${q.year})` : `JEE Main ${q.year}`;
 let bank = store.get(KEYS.bank, null);
 if (!bank || !Array.isArray(bank.questions) || !bank.questions.length) bank = SAMPLE;
 
@@ -684,6 +687,7 @@ function normalizeQ(raw, i, errs, fromCsv) {
     question: String(raw.question || '').trim(), solution: String(raw.solution || '').trim()
   };
   if (raw.image) q.image = String(raw.image).trim();
+  if (raw.source) q.source = String(raw.source).trim();
   if (!q.subject) { errs.push(`${where}: subject is missing.`); return null; }
   if (!q.question) { errs.push(`${where}: question text is missing.`); return null; }
   if (!Number.isFinite(q.year)) { errs.push(`${where}: year must be a number such as 2025.`); return null; }
@@ -758,6 +762,7 @@ function resetSelection() {
 function saveCfg() { store.set(KEYS.cfg, Object.assign({}, cfg, { years: [...sel.years], chapters: [...sel.chapters] })); }
 
 function renderBankLabel() {
+  $('#yearNote').hidden = !bank.sample;
   $('#bankLabel').textContent = `${bank.name}: ${bank.questions.length} questions`;
   $('#bankNote').innerHTML = bank.sample
     ? 'The built-in bank holds 84 original practice questions written in JEE Main style and tagged by year to demonstrate the filters. They are not official NTA papers. Use <b>Manage bank</b> to import real previous-year questions.'
@@ -911,7 +916,7 @@ function buildExam() {
   });
   return {
     id: Date.now().toString(36),
-    cfg: { testName: cfg.testName.trim() || 'JEE Main Mock Test', candidate: cfg.candidate.trim() || 'Candidate', duration: cfg.duration, mcqC: cfg.mcqC, mcqW: cfg.mcqW, numC: cfg.numC, numW: cfg.numW, years: [...sel.years].sort(), bankName: bank.name },
+    cfg: { testName: cfg.testName.trim() || 'JEE Main Mock Test', candidate: cfg.candidate.trim() || 'Candidate', duration: cfg.duration, mcqC: cfg.mcqC, mcqW: cfg.mcqW, numC: cfg.numC, numW: cfg.numW, years: [...sel.years].sort(), bankName: bank.name, sample: !!bank.sample },
     sections, qs, resp: qs.map(() => ({ v: null, visited: false, marked: false, t: 0 })),
     cur: 0, startedAt: null, endsAt: null, submittedAt: null
   };
@@ -1122,7 +1127,7 @@ function renderReview() {
     let body;
     if (q.type === 'MCQ') body = `<div class="rev-opts">${q.options.map((o, k) => { const isC = k === q.answer, isY = x.att && +x.given === k; return `<div class="rev-opt${isC ? ' correct' : isY ? ' wrong' : ''}"><b>(${k + 1})</b><span>${rich(o)}</span>${isC && isY ? '<em class="pos">Your answer · correct</em>' : isC ? '<em class="pos">Correct answer</em>' : isY ? '<em class="negc">Your answer</em>' : ''}</div>`; }).join('')}</div>`;
     else body = `<div class="rev-opts"><div class="rev-opt${x.att ? (x.ok ? ' correct' : ' wrong') : ''}">Your answer: <b class="num">${esc(answerText(q, x.given))}</b></div><div class="rev-opt correct">Correct answer: <b class="num">${esc(correctText(q))}</b></div></div>`;
-    return `<div class="rev-item"><div class="rev-top"><span><b style="color:var(--ink)">Q${x.i + 1}</b> · ${esc(q.subject)} · ${esc(q.chapter)} · PYQ ${q.year} · ${q.type === 'MCQ' ? 'MCQ' : 'Numerical'} · ${Math.round(x.time / 1000)} s spent</span>${pill}</div><div class="rev-q">${rich(q.question)}${qImg(q)}</div>${body}${q.solution ? `<div class="rev-sol"><b>Solution:</b> ${rich(q.solution)}</div>` : ''}</div>`;
+    return `<div class="rev-item"><div class="rev-top"><span><b style="color:var(--ink)">Q${x.i + 1}</b> · ${esc(q.subject)} · ${esc(q.chapter)} · ${esc(srcLabel(q))} · ${q.type === 'MCQ' ? 'MCQ' : 'Numerical'} · ${Math.round(x.time / 1000)} s spent</span>${pill}</div><div class="rev-q">${rich(q.question)}${qImg(q)}</div>${body}${q.solution ? `<div class="rev-sol"><b>Solution:</b> ${rich(q.solution)}</div>` : ''}</div>`;
   }).join('') || '<p style="color:var(--muted)">No questions in this group.</p>';
 }
 $('#btnReview').addEventListener('click', () => { const c = $('#reviewCard'); c.hidden = !c.hidden; if (!c.hidden) { renderReview(); c.scrollIntoView({ behavior: 'smooth', block: 'start' }); } });
@@ -1138,9 +1143,10 @@ function reportBlocks(ex, res) {
   B.push(`<div><div class="rp-title">Performance Report</div><div style="font-size:13px;color:#3d4a5c;margin-top:2px">${esc(c.testName)}</div></div>`);
   B.push(`<div class="rp-meta">
     <div><span>Candidate:</span> <b>${esc(c.candidate)}</b></div><div><span>Submitted:</span> ${esc(new Date(ex.submittedAt).toLocaleString())}${ex.timeUp ? ' (time ran out)' : ''}</div>
-    <div><span>Duration:</span> ${c.duration} min · <span>time used:</span> ${human(taken)}</div><div><span>PYQ years:</span> ${esc(c.years.join(', '))}</div>
+    <div><span>Duration:</span> ${c.duration} min · <span>time used:</span> ${human(taken)}</div><div><span>${c.sample ? 'Year tags' : 'PYQ years'}:</span> ${esc(c.years.join(', '))}</div>
     <div><span>Subjects:</span> ${esc(ex.sections.map(s => s.name).join(', '))}</div><div><span>Marking:</span> MCQ +${fmtMarks(c.mcqC)}/−${fmtMarks(c.mcqW)} · Numerical +${fmtMarks(c.numC)}/−${fmtMarks(c.numW)}</div>
     <div><span>Question bank:</span> ${esc(c.bankName || '')}</div></div>`);
+  if (c.sample) B.push(`<div style="font-size:10.5px;background:#fff5e6;border:1px solid #f3d19c;color:#7a4b00;border-radius:4px;padding:5px 8px">This test used the built-in sample bank: original practice questions written in JEE Main style. They are not official NTA questions, and the years shown are demonstration tags only.</div>`);
   B.push(`<div class="rp-score"><div class="main"><div class="l">Final score</div><div class="n">${fmtMarks(t.score)}<small> / ${fmtMarks(t.max)}</small></div><div style="font-size:10.5px;margin-top:6px;opacity:.9">+${fmtMarks(t.pos)} positive · −${fmtMarks(t.neg)} negative</div></div>
     <div class="rp-kv"><div><b>${t.c}</b><span>Correct</span></div><div><b>${t.w}</b><span>Incorrect</span></div><div><b>${t.u}</b><span>Not attempted</span></div>
     <div><b style="color:#1f7a37">+${fmtMarks(t.pos)}</b><span>Positive marks</span></div><div><b style="color:#b3321f">−${fmtMarks(t.neg)}</b><span>Negative marks</span></div><div><b>${Math.round(t.acc * 100)}%</b><span>Accuracy</span></div></div></div>`);
@@ -1163,7 +1169,7 @@ function reportBlocks(ex, res) {
     } else {
       body = `<div class="rp-ans"><span style="${x.att ? (x.ok ? 'background:#e3f3e7;border-color:#9fd2ad' : 'background:#fbe7e4;border-color:#eba89d') : ''}">Your answer: <b>${esc(x.att ? x.given : 'Not attempted')}</b></span><span style="background:#e3f3e7;border-color:#9fd2ad">Correct answer: <b>${esc(correctText(q))}</b></span></div>`;
     }
-    B.push(`<div class="rp-q"><div class="rp-qh"><span><b>Q${x.i + 1}</b> · ${esc(q.subject)} · ${esc(q.chapter)} · PYQ ${q.year} · ${q.type === 'MCQ' ? 'MCQ' : 'Numerical'}${x.st === 'amr' || x.st === 'mr' ? ' · marked for review' : ''} · ${Math.round(x.time / 1000)} s</span>${st}</div>
+    B.push(`<div class="rp-q"><div class="rp-qh"><span><b>Q${x.i + 1}</b> · ${esc(q.subject)} · ${esc(q.chapter)} · ${esc(srcLabel(q))} · ${q.type === 'MCQ' ? 'MCQ' : 'Numerical'}${x.st === 'amr' || x.st === 'mr' ? ' · marked for review' : ''} · ${Math.round(x.time / 1000)} s</span>${st}</div>
       <div class="rp-qt">${rich(q.question)}${qImg(q)}</div>${body}${q.solution ? `<div class="rp-sol"><b>Solution:</b> ${rich(q.solution)}</div>` : ''}</div>`);
   });
   return B;
