@@ -1,4 +1,6 @@
-<title>NotebookLM Hands-On Lab</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gemini Notebook Hands-On Lab</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Caveat:wght@600&display=swap">
@@ -134,7 +136,7 @@ footer{margin-top:56px;padding-top:20px;border-top:2px solid var(--rule);color:v
 <div class="wrap">
   <header class="top">
     <span class="eyebrow">Teacher Workshop · Hands-on Lab</span>
-    <h1>NotebookLM Hands-On Lab</h1>
+    <h1>Gemini Notebook Hands-On Lab</h1>
     <p class="lede">Follow these steps along with the live demo, then come back to them whenever you want to try on your own. Tick each step as you finish it. Your ticks are saved in this browser.</p>
     <div class="meta">
       <span><b>You need:</b> a Google account and a laptop or phone</span>
@@ -142,7 +144,7 @@ footer{margin-top:56px;padding-top:20px;border-top:2px solid var(--rule);color:v
       <span><b>Website:</b> <a href="https://notebooklm.google.com" target="_blank" rel="noopener">notebooklm.google.com</a></span>
     </div>
     <nav class="toc" aria-label="Sections">
-      <a href="#map">Screen map</a><a href="#lab">Guided steps</a><a href="#sample">Sample source</a><a href="#prompts">Prompt library</a><a href="#practice">Practice challenges</a><a href="#safe">Safe use</a><a href="#help">Help &amp; FAQ</a>
+      <a href="#map">Screen map</a><a href="#lab">Guided steps</a><a href="#sample">Sample source</a><a href="#prompts">Prompt library</a><a href="#practice">Practice challenges</a><a href="#admin">Admin tasks</a><a href="#which">Which tool?</a><a href="#safe">Safe use</a><a href="#help">Help &amp; FAQ</a>
     </nav>
   </header>
 
@@ -155,9 +157,9 @@ footer{margin-top:56px;padding-top:20px;border-top:2px solid var(--rule);color:v
 
   <section id="map">
     <span class="eyebrow">Before you start</span>
-    <h2>The NotebookLM screen in three parts</h2>
+    <h2>The Gemini Notebook screen in three parts</h2>
     <p class="lede">Every notebook has the same three panels. On a phone they show as three tabs at the bottom.</p>
-    <div class="screen" aria-label="Diagram of the three NotebookLM panels">
+    <div class="screen" aria-label="Diagram of the three Gemini Notebook panels">
       <div class="pane"><b>Sources</b><small>Left panel. The material you upload: PDFs, links, videos, notes. The AI answers only from these.</small></div>
       <div class="pane"><b>Chat</b><small>Middle panel. Ask questions about your sources. Every answer has numbered citations you can click to see the exact line.</small></div>
       <div class="pane"><b>Studio</b><small>Right panel. One-click teaching material: audio and video overviews, mind maps, reports, quizzes, flashcards, slides.</small></div>
@@ -172,11 +174,11 @@ footer{margin-top:56px;padding-top:20px;border-top:2px solid var(--rule);color:v
 
     <ol class="steps" id="steps">
       <li class="step" data-id="s1">
-        <div class="step-head"><h3>Open NotebookLM and sign in</h3><label class="chk"><input type="checkbox" id="c-s1"> Done</label></div>
+        <div class="step-head"><h3>Open Gemini Notebook and sign in</h3><label class="chk"><input type="checkbox" id="c-s1"> Done</label></div>
         <ul>
           <li>Go to <a href="https://notebooklm.google.com" target="_blank" rel="noopener">notebooklm.google.com</a> in Chrome, Edge or Safari.</li>
-          <li>Sign in with your Google account. A school Google Workspace account works if your school admin has switched NotebookLM on.</li>
-          <li>On a phone, you can install the <b>NotebookLM</b> app from the Play Store or App Store instead.</li>
+          <li>Sign in with your Google account. A school Google Workspace account works if your school admin has switched Gemini Notebook on.</li>
+          <li>On a phone, you can install the <b>Gemini Notebook</b> app from the Play Store or App Store instead.</li>
         </ul>
         <p class="see"><b>You should see:</b> a home page with a <b>Create new</b> button and some featured notebooks from Google.</p>
       </li>
@@ -371,6 +373,10 @@ footer{margin-top:56px;padding-top:20px;border-top:2px solid var(--rule);color:v
       <h3>Admin and communication <small>save time on paperwork</small></h3>
       <div class="prompt">From this circular, list every action teachers must take, with deadlines, as a checklist.<button class="copy" type="button">Copy</button></div>
       <div class="prompt">Write a short, friendly note to parents explaining what students will learn in this unit and how they can help at home.<button class="copy" type="button">Copy</button></div>
+      <div class="prompt">According to these circulars, what are the rules for [re-tests / leave / exam duty]? Quote the circular number and date for each rule.<button class="copy" type="button">Copy</button></div>
+      <div class="prompt">From this staff meeting recording, write the minutes: decisions taken, action items with the person responsible and deadline, and open questions.<button class="copy" type="button">Copy</button></div>
+      <div class="prompt">Compare my draft question paper with the syllabus and blueprint. Map each question to a chapter and a Bloom's level, total the marks per chapter, and list any chapter that is over- or under-tested.<button class="copy" type="button">Copy</button></div>
+      <div class="prompt">List all dates and deadlines in these circulars for this term, as a table sorted by date: date, what is due, who is responsible.<button class="copy" type="button">Copy</button></div>
     </div>
   </section>
 
@@ -385,12 +391,97 @@ footer{margin-top:56px;padding-top:20px;border-top:2px solid var(--rule);color:v
     </div>
   </section>
 
+  <section id="admin">
+    <span class="eyebrow">Part C · Beyond teaching</span>
+    <h2>Admin tasks: work with a class list</h2>
+    <p class="lede">Teachers spend hours on marks, attendance and follow-up. Try this with the sample sheet below. It uses roll numbers only: the AI never needs to see a child's name.</p>
+
+    <div class="caution"><b>Before you use your own class list:</b> delete names, phone numbers, addresses, health and family details. Keep only roll numbers and the columns you need. Match names back afterwards in Excel or Google Sheets on your own computer (VLOOKUP or mail merge). This applies to every AI tool, not only Gemini Notebook.</div>
+
+    <div class="source">
+      <button class="copy" type="button" data-target="classCsv">Copy data</button>
+      <h3>Sample class list: Class 8B, Term 1 (fictional)</h3>
+      <pre id="classCsv" style="margin:0;font:15px/28px ui-monospace,Menlo,Consolas,monospace;overflow-x:auto">Roll No,UT1 (out of 25),UT2 (out of 25),Attendance %,Homework submitted (out of 10)
+01,21,23,96,10
+02,17,15,88,8
+03,9,12,79,6
+04,24,22,92,9
+05,13,11,74,5
+06,19,20,90,9
+07,8,9,71,4
+08,22,24,98,10
+09,15,16,85,7
+10,11,8,68,3
+11,20,18,93,8
+12,6,10,82,5
+13,18,21,89,9
+14,14,13,77,6
+15,23,25,95,10</pre>
+    </div>
+
+    <ol class="steps" style="counter-reset:s 14">
+      <li class="step" data-id="c1">
+        <div class="step-head"><h3>Add the class list as a source</h3><label class="chk"><input type="checkbox" id="c-c1"> Done</label></div>
+        <ul>
+          <li>Create a new notebook called <code>Class 8B – Term 1 records</code>.</li>
+          <li><b>Easiest:</b> click <span class="path">+ Add</span> → <b>Copied text</b> and paste the data above.</li>
+          <li><b>Or</b> paste it into a new Google Sheet (it splits into columns) and add the sheet from <b>Drive</b>. Your own marks register can be added the same way, or as a CSV file.</li>
+        </ul>
+      </li>
+      <li class="step" data-id="c2">
+        <div class="step-head"><h3>Ask find-and-list questions</h3><label class="chk"><input type="checkbox" id="c-c2"> Done</label></div>
+        <div class="prompt">Which students scored below 10 in either unit test? Show their attendance too.<button class="copy" type="button">Copy</button></div>
+        <div class="prompt">List the roll numbers with attendance below 75%, and their homework score.<button class="copy" type="button">Copy</button></div>
+        <div class="prompt">Suggest three remedial groups based on these marks, with the roll numbers in each group and what each group needs.<button class="copy" type="button">Copy</button></div>
+        <p class="see"><b>Check:</b> the answers should be rolls 03, 07, 10 and 12 for the first question, and rolls 05, 07 and 10 for the second. Click the citations to see the rows.</p>
+      </li>
+      <li class="step" data-id="c3">
+        <div class="step-head"><h3>Try a calculation, and see the difference</h3><label class="chk"><input type="checkbox" id="c-c3"> Done</label></div>
+        <div class="prompt">What is the class average in UT1 and in UT2? How many students improved from UT1 to UT2? Make a chart.<button class="copy" type="button">Copy</button></div>
+        <ul>
+          <li>Correct answer: UT1 average <b>16.0</b>, UT2 average <b>16.5</b> (16.47), <b>9 of 15</b> students improved.</li>
+          <li>On the free plan, Gemini Notebook may estimate or slip on these numbers, and it can't draw a chart. Paid (Pro) plans can now run code for calculations.</li>
+          <li>Now paste the same data and question into <b>ChatGPT</b> or <b>Claude</b>. They run a real calculation and draw the chart. Compare.</li>
+        </ul>
+        <p class="tip"><b>Takeaway:</b> use the notebook to <i>find and explain</i> what's in your records; use a tool that calculates for averages, ranks and charts. Either way, check the numbers.</p>
+      </li>
+      <li class="step" data-id="c4">
+        <div class="step-head"><h3>Build a "school rulebook" notebook</h3><label class="chk"><input type="checkbox" id="c-c4"> Done</label></div>
+        <ul>
+          <li>Make a notebook with this term's circulars, the staff handbook, the academic calendar and board exam guidelines.</li>
+          <li>Ask: <i>What are the rules for re-tests?</i> or <i>List every deadline this term as a table.</i> Each answer cites the circular.</li>
+          <li>Share it as <b>chat only</b> with colleagues, so everyone gets the same cited answer.</li>
+        </ul>
+        <p class="tip"><b>More admin ideas:</b> upload a staff-meeting recording (with consent) for minutes and action items; upload syllabus + blueprint + draft question paper to check coverage. Prompts are in the <a href="#prompts">prompt library</a>.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section id="which">
+    <span class="eyebrow">The stark difference</span>
+    <h2>Gemini Notebook or ChatGPT / Claude?</h2>
+    <p class="lede">Gemini Notebook is like a librarian who has read only your files and always shows you the page. ChatGPT and Claude are all-rounders: they know a lot, write well and can calculate, but you have to check their facts.</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Task</th><th>Better tool</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>"What's the last date to upload Term 1 marks?"</td><td><b>Gemini Notebook</b></td><td>The answer is in your circular; it gives the date and cites it. A chatbot can't know your school's dates.</td></tr>
+          <tr><td>Averages, ranks, improvement, charts from a marks sheet</td><td><b>ChatGPT / Claude</b></td><td>They run real calculations. (Gemini Notebook can too on paid plans.)</td></tr>
+          <tr><td>Find students below 75% attendance</td><td>Either</td><td>Both can filter a sheet. The notebook cites each row.</td></tr>
+          <tr><td>Explain a chapter, make a quiz, podcast or mind map</td><td><b>Gemini Notebook</b></td><td>Built in, and it stays inside your syllabus.</td></tr>
+          <tr><td>Draft a new letter, event plan or speech from scratch</td><td><b>ChatGPT / Claude</b></td><td>Strong open-ended writing and brainstorming.</td></tr>
+          <tr><td>Check a question paper against the blueprint</td><td><b>Gemini Notebook</b></td><td>Works from your syllabus and blueprint, with citations.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <section id="safe">
     <span class="eyebrow">Use it responsibly</span>
     <h2>Safe-use checklist</h2>
     <ul class="checklist">
-      <li><b>No personal data.</b> Don't upload students' names, marks, phone numbers, health or family details. India's Digital Personal Data Protection Act, 2023 applies to this data.</li>
-      <li><b>Verify before you teach.</b> Click the citations. NotebookLM makes fewer mistakes because it uses your sources, but it can still misread them.</li>
+      <li><b>No identifiable student data.</b> Don't upload students' names, phone numbers, addresses, health or family details. For marks and attendance, use roll numbers only and match names back on your own computer. India's Digital Personal Data Protection Act, 2023 applies to this data.</li>
+      <li><b>Verify before you teach.</b> Click the citations. Gemini Notebook makes fewer mistakes because it uses your sources, but it can still misread them.</li>
       <li><b>Respect copyright.</b> Upload only material you are allowed to use: your own notes, free textbooks like NCERT, open resources.</li>
       <li><b>Follow school policy</b> and Google's age rules before sharing notebooks with students.</li>
       <li><b>Keep your judgement.</b> The AI drafts; you decide what is right for your class.</li>
@@ -402,13 +493,15 @@ footer{margin-top:56px;padding-top:20px;border-top:2px solid var(--rule);color:v
     <span class="eyebrow">When you get stuck</span>
     <h2>Help &amp; FAQ</h2>
     <div class="faq">
-      <details><summary>Is NotebookLM free?</summary><p>Yes, the basic version is free with any Google account. There are daily limits on chats and generated overviews. Paid plans (Google AI Pro and some Workspace plans) raise the limits. Check notebooklm.google for the current numbers.</p></details>
+      <details><summary>Is this the same as NotebookLM?</summary><p>Yes. Google renamed NotebookLM to Gemini Notebook in July 2026. Your notebooks, the website and the features are the same; only the name and logo changed. It is different from the Gemini chat app, which is a general chatbot like ChatGPT.</p></details>
+      <details><summary>Can it read my Excel or Google Sheets marks register?</summary><p>Yes, it accepts Google Sheets and CSV files (save your Excel file as CSV, or upload it to Google Sheets first). Remove student names and personal details first. It is good at finding and listing; on the free plan, use ChatGPT or Claude for averages, ranks and charts, and check the numbers.</p></details>
+      <details><summary>Is Gemini Notebook free?</summary><p>Yes, the basic version is free with any Google account. There are daily limits on chats and generated overviews. Paid plans (Google AI Pro and some Workspace plans) raise the limits. Check notebooklm.google for the current numbers.</p></details>
       <details><summary>How many sources can I add?</summary><p>On the free plan, up to 50 sources per notebook at the time of writing, and each source can be very long (hundreds of pages). Paid plans allow more.</p></details>
       <details><summary>My YouTube link won't add.</summary><p>The video must be public and have captions. Try another video, or paste the transcript as copied text.</p></details>
       <details><summary>My PDF gives poor answers.</summary><p>Scanned PDFs (photos of pages) may not be read well. Use a PDF where you can select the text, or a clearer scan.</p></details>
       <details><summary>The answer is wrong or strange.</summary><p>Click the citation to see what the source actually says. Rephrase the question, untick unrelated sources, or add a better source.</p></details>
       <details><summary>Can I get answers in Tamil or Hindi?</summary><p>Yes. Ask in that language, or set <b>Settings → Output language</b>. Audio and video overviews can also be generated in many Indian languages.</p></details>
-      <details><summary>Does Google use my uploads to train its AI?</summary><p>Google states that NotebookLM does not use your sources or chats to train its models for personal accounts, and Workspace for Education accounts have added data protections. Still, avoid uploading anything confidential.</p></details>
+      <details><summary>Does Google use my uploads to train its AI?</summary><p>Google states that Gemini Notebook does not use your sources or chats to train its models for personal accounts, and Workspace for Education accounts have added data protections. Still, avoid uploading anything confidential.</p></details>
       <details><summary>I can't see a feature shown in the workshop.</summary><p>Google releases features gradually and renames buttons. Refresh the page, update the app, or check your school account settings with your admin.</p></details>
     </div>
 
@@ -428,7 +521,7 @@ footer{margin-top:56px;padding-top:20px;border-top:2px solid var(--rule);color:v
 
   <footer>
     <p class="hand">Keep experimenting. Build one notebook a week.</p>
-    <p>Prepared for the NotebookLM workshop for school teachers. Features and limits described here were current at the time of writing and may change as Google updates NotebookLM.</p>
+    <p>Prepared for the Gemini Notebook workshop for school teachers. Features and limits described here were current at the time of writing and may change as Google updates Gemini Notebook.</p>
   </footer>
 </div>
 

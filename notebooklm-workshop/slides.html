@@ -1,4 +1,6 @@
-<title>NotebookLM for Teachers</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gemini Notebook for Teachers</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Caveat:wght@600;700&display=swap">
@@ -41,8 +43,8 @@ p{margin:0}
 .hand{font-family:var(--hand);font-size:34px;color:var(--margin);line-height:1.1}
 mark{background:linear-gradient(100deg,transparent 1%,var(--hl) 3%,var(--hl) 97%,transparent 99%);color:inherit;padding:0 .12em}
 .body{font-size:22px;line-height:1.45}
-ul.pts{margin:0;padding-left:1.1em;display:grid;gap:10px;font-size:23px;line-height:1.4}
-ul.pts li::marker{color:var(--margin)}
+ul.pts,ol.pts{margin:0;padding-left:1.1em;display:grid;gap:10px;font-size:23px;line-height:1.4}
+.pts li::marker{color:var(--margin);font-weight:700}
 .g2,.g3,.g4{display:grid;gap:18px}
 .g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
 .card{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:18px 20px;display:grid;gap:8px;align-content:start}
@@ -61,7 +63,8 @@ ul.pts li::marker{color:var(--margin)}
 .title-slide{justify-content:center;gap:26px}
 .title-slide h1 .nb{color:var(--blue)}
 .title-slide .who{font-size:21px;color:var(--ink2)}
-.sticky{position:absolute;right:84px;top:92px;width:260px;padding:22px;background:var(--hl);transform:rotate(3deg);box-shadow:0 8px 20px rgba(22,34,61,.18);font:700 30px/1.15 var(--hand);color:var(--ink)}
+.title-slide h1,.title-slide .lede{max-width:780px}
+.sticky{position:absolute;right:70px;bottom:96px;width:250px;padding:22px;background:var(--hl);transform:rotate(3deg);box-shadow:0 8px 20px rgba(22,34,61,.18);font:700 30px/1.15 var(--hand);color:var(--ink)}
 
 /* big number */
 .big{font:800 120px/1 var(--display);color:var(--blue);letter-spacing:-.04em}
@@ -88,6 +91,7 @@ th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vert
 th{font-family:var(--display);font-size:19px;background:var(--blue-soft)}
 tr:last-child td{border-bottom:0}
 td.y{color:var(--green);font-weight:700}
+table.cmp th,table.cmp td{padding:8px 14px;font-size:18px;line-height:1.35}
 
 /* steps sequence */
 .seq{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;counter-reset:n}
@@ -124,11 +128,12 @@ td.y{color:var(--green);font-weight:700}
 <!-- 1 -->
 <section class="slide title-slide">
   <span class="kicker">Workshop for school teachers</span>
-  <h1>Your own AI teaching assistant:<br><span class="nb">NotebookLM</span></h1>
-  <p class="lede">Turn the textbooks, notes and videos you already use into answers you can verify, study guides, quizzes, mind maps and podcasts. It's free with a Google account.</p>
+  <h1>Your own AI teaching assistant: <span class="nb">Gemini Notebook</span></h1>
+  <div class="row"><span class="chip">Formerly NotebookLM · renamed July 2026</span></div>
+  <p class="lede">Turn the textbooks, circulars, notes and class records you already use into answers you can verify, study guides, quizzes, mind maps and podcasts. It's free with a Google account.</p>
   <p class="who">Hands-on session · Sri Ramachandra Faculty of Engineering and Technology</p>
   <div class="sticky">Bring a laptop or phone.<br>You'll build a notebook today!</div>
-  <aside class="notes">Welcome everyone. Ask: How many of you have tried ChatGPT or Gemini? How many worried the answer might be wrong? Today's tool is different: it only uses the material you give it and it shows you where every answer came from. Ask participants to open notebooklm.google.com and sign in while you talk.</aside>
+  <aside class="notes">Welcome everyone. Ask: How many of you have tried ChatGPT, Claude or Gemini? How many worried the answer might be wrong? Today's tool is different: it only uses the material you give it and it shows you where every answer came from. Mention that Google renamed NotebookLM to Gemini Notebook in July 2026: same tool, same notebooks, new name and logo. If anyone has seen "NotebookLM" before, it's the same thing. Ask participants to open notebooklm.google.com and sign in while you talk.</aside>
 </section>
 
 <!-- 2 -->
@@ -136,8 +141,8 @@ td.y{color:var(--green);font-weight:700}
   <span class="kicker">Today's plan</span>
   <h2>What we'll cover in the next 90 minutes</h2>
   <div class="g2" style="margin-top:10px">
-    <div class="card"><h3>1 · Understand</h3><p>What NotebookLM is, how it differs from ChatGPT, and why it's safer for teaching.</p></div>
-    <div class="card"><h3>2 · See it</h3><p>A tour of every feature: chat with citations, audio and video overviews, mind maps, quizzes, flashcards, reports and slides.</p></div>
+    <div class="card"><h3>1 · Understand</h3><p>What Gemini Notebook is, how it differs from ChatGPT and Claude, and when to use which.</p></div>
+    <div class="card"><h3>2 · See it</h3><p>Every feature, for teaching <i>and</i> for admin work: circulars, class lists, meeting minutes, question papers.</p></div>
     <div class="card"><h3>3 · Do it</h3><p>A live demo while you follow along using the hands-on lab guide.</p></div>
     <div class="card"><h3>4 · Plan it</h3><p>Classroom ideas by subject, prompt recipes, and rules for safe use.</p></div>
   </div>
@@ -160,22 +165,22 @@ td.y{color:var(--green);font-weight:700}
 
 <!-- 4 -->
 <section class="slide">
-  <span class="kicker">What is NotebookLM?</span>
+  <span class="kicker">What is Gemini Notebook?</span>
   <h2>An AI that reads <mark>only what you give it</mark></h2>
   <div class="g2" style="margin-top:6px">
     <div class="card" style="border-color:var(--line)">
-      <span class="chip p">General chatbot</span>
-      <h3>Answers from the whole internet</h3>
-      <ul class="pts" style="font-size:20px"><li>May mix up syllabi and boards</li><li>No easy way to check where a fact came from</li><li>Can confidently invent answers</li></ul>
+      <span class="chip p">General chatbot: ChatGPT, Claude, Gemini app</span>
+      <h3>Answers from everything it has learned</h3>
+      <ul class="pts" style="font-size:20px"><li>May mix up syllabi and boards</li><li>Hard to check where a fact came from</li><li>Will answer even when it doesn't know</li></ul>
     </div>
     <div class="card" style="border-color:var(--green)">
-      <span class="chip g">NotebookLM</span>
+      <span class="chip g">Gemini Notebook</span>
       <h3>Answers from <i>your</i> sources</h3>
       <ul class="pts" style="font-size:20px"><li>Uses your textbook, notes, videos</li><li>Every answer has clickable citations</li><li>Says so when the sources don't cover the question</li></ul>
     </div>
   </div>
-  <p class="body">A free Google tool at <b>notebooklm.google.com</b>, also available as an Android and iOS app. It runs on Google's Gemini models.</p>
-  <aside class="notes">Key idea: "source-grounded". Researchers call this approach retrieval-augmented generation (RAG). Think of a very fast teaching assistant who has read only your books.</aside>
+  <p class="body">A free Google tool at <b>notebooklm.google.com</b>, also available as an Android and iOS app. Called NotebookLM until July 2026. It runs on Google's Gemini models.</p>
+  <aside class="notes">Key idea: "source-grounded". Don't confuse Gemini Notebook with the Gemini chat app: the chat app is a general chatbot like ChatGPT; Gemini Notebook answers only from your sources. Researchers call this approach retrieval-augmented generation (RAG). Think of a very fast teaching assistant who has read only your books.</aside>
 </section>
 
 <!-- 5 -->
@@ -306,6 +311,42 @@ td.y{color:var(--green);font-weight:700}
   <aside class="notes">Ask the room: which of these would save you the most time? Take two or three answers.</aside>
 </section>
 
+<!-- Admin -->
+<section class="slide">
+  <span class="kicker">Beyond the classroom</span>
+  <h2>Teachers also run the school: admin with AI</h2>
+  <div class="g3 tight">
+    <div class="card"><h3>School rulebook notebook</h3><p>Put every circular, the staff handbook, academic calendar and board guidelines in one shared notebook. Ask "What is the re-test rule?" and get the answer with the circular cited.</p></div>
+    <div class="card"><h3>Staff meeting minutes</h3><p>Upload the meeting recording. Get minutes, decisions and a who-does-what list, each linked to the moment it was said.</p></div>
+    <div class="card"><h3>Question paper check</h3><p>Upload the syllabus, blueprint and your draft paper. Ask which chapters are over- or under-tested and whether marks match the blueprint.</p></div>
+    <div class="card"><h3>Class list follow-up</h3><p>From an anonymised marks and attendance sheet: who needs remedial classes, who is below 75% attendance. <b>Next slide.</b></p></div>
+    <div class="card"><h3>Parent communication</h3><p>PTM agendas, progress letters and reminders drafted from the circular itself, so dates and rules are right.</p></div>
+    <div class="card"><h3>Reports &amp; inspections</h3><p>Turn event notes, club records and circulars into a monthly report, or check your files against an inspection checklist.</p></div>
+  </div>
+  <p class="hand">Rule of thumb: if the answer is in a document you have, put that document in a notebook.</p>
+  <aside class="notes">This is the slide that usually gets the biggest reaction. Ask: how much time did you spend last month looking for a line in a circular? The "school rulebook notebook" is the easiest win: a head of department builds it once, shares it chat-only with all staff, and everyone gets cited answers. Meeting recordings: get consent before recording. Question paper check: ask "Map each question to a chapter and a Bloom's level, then total the marks per chapter" and compare with the blueprint.</aside>
+</section>
+
+<!-- Class list -->
+<section class="slide">
+  <span class="kicker">Worked example · Your class list</span>
+  <h2>Working with a student list, safely</h2>
+  <div class="g2" style="grid-template-columns:1fr 1.2fr;align-items:start">
+    <ol class="pts" style="padding-left:1.2em">
+      <li><b>Anonymise.</b> Keep roll numbers. Delete names, phone numbers, addresses, health notes.</li>
+      <li><b>Upload</b> the sheet as a Google Sheet or CSV file.</li>
+      <li><b>Ask</b> questions. Click citations to check the rows.</li>
+      <li><b>Put names back yourself</b> in Excel or Sheets, using the roll numbers.</li>
+    </ol>
+    <div class="chat">
+      <div class="q">Which students scored below 10 in either unit test? Show their attendance too.</div>
+      <div class="a">Four students: <b>Roll 03</b> (UT1: 9, attendance 79%)<span class="cite">1</span>, <b>Roll 07</b> (UT1: 8, UT2: 9, 71%)<span class="cite">1</span>, <b>Roll 10</b> (UT2: 8, 68%)<span class="cite">1</span> and <b>Roll 12</b> (UT1: 6, 82%)<span class="cite">1</span>. Rolls 07 and 10 are also below 75% attendance.</div>
+    </div>
+  </div>
+  <div class="row"><span class="chip g">Good at: find, filter, list, explain</span><span class="chip p">Free plan is weak at: averages, ranks, charts</span><span class="chip">For calculations: ChatGPT / Claude, or Gemini Notebook on a Pro plan</span></div>
+  <aside class="notes">The sample sheet is in the lab guide (Part C), with 15 fictional roll numbers. Live demo: upload it, ask this question, click the citation. Then ask "What is the class average in UT1?" On the free plan it may estimate or get it slightly wrong. That's the moment to show the difference: ChatGPT and Claude actually run a calculation on the spreadsheet. Since July 2026, Gemini Notebook can also run code, but only on paid (Pro/Ultra) plans. Stress step 4: the AI never needs to see a child's name. Names go back in using VLOOKUP or mail merge on your own computer.</aside>
+</section>
+
 <!-- 13 -->
 <section class="slide">
   <span class="kicker">Ideas by subject</span>
@@ -316,7 +357,7 @@ td.y{color:var(--green);font-weight:700}
     <div class="card"><h3>Languages</h3><p>Upload a poem or story. Generate a vocabulary list, character map, and an audio discussion in Tamil or English.</p></div>
     <div class="card"><h3>Social Science</h3><p>Upload the history chapter. Create a timeline, a debate-format audio overview, and "who said what" flashcards.</p></div>
   </div>
-  <aside class="notes">Tip for maths: NotebookLM is strongest with text. Always verify worked calculations; AI can still slip on arithmetic.</aside>
+  <aside class="notes">Tip for maths: Gemini Notebook is strongest with text. Always verify worked calculations; AI can still slip on arithmetic.</aside>
 </section>
 
 <!-- 14 -->
@@ -371,19 +412,39 @@ td.y{color:var(--green);font-weight:700}
 <!-- 17 -->
 <section class="slide">
   <span class="kicker">How it compares</span>
-  <h2>Where NotebookLM fits among AI tools</h2>
-  <table>
-    <thead><tr><th></th><th>NotebookLM</th><th>ChatGPT / Gemini chat</th><th>Teacher AI apps (MagicSchool, Khanmigo)</th></tr></thead>
+  <h2>A librarian vs. an all-rounder</h2>
+  <table class="cmp">
+    <thead><tr><th style="width:26%"></th><th style="width:37%">Gemini Notebook</th><th>ChatGPT / Claude</th></tr></thead>
     <tbody>
-      <tr><td><b>Uses your own material</b></td><td class="y">Yes, and nothing else by default</td><td>Yes, with file upload or projects</td><td>Partly</td></tr>
-      <tr><td><b>Clickable citations to the exact line</b></td><td class="y">Yes, on every answer</td><td>Limited</td><td>Limited</td></tr>
-      <tr><td><b>Podcasts, videos, mind maps</b></td><td class="y">Built in</td><td>Mostly no</td><td>Some tools</td></tr>
-      <tr><td><b>Indian languages</b></td><td class="y">Chat and audio in many</td><td>Chat in many</td><td>Varies</td></tr>
-      <tr><td><b>Cost</b></td><td class="y">Free, with a paid tier</td><td>Free, with a paid tier</td><td>Free tier, paid features</td></tr>
+      <tr><td><b>Where answers come from</b></td><td class="y">Only the sources you added</td><td>Everything it learned, the web, and any files you attach</td></tr>
+      <tr><td><b>When it doesn't know</b></td><td class="y">Says your sources don't cover it</td><td>Usually answers anyway, from general knowledge</td></tr>
+      <tr><td><b>Proof</b></td><td class="y">Citation to the exact line, on every answer</td><td>Links when it searches the web; file citations vary</td></tr>
+      <tr><td><b>Calculations on a sheet</b></td><td>Pro plan only (new since July 2026)</td><td class="y">Yes: runs real calculations, makes charts</td></tr>
+      <tr><td><b>Writing from scratch, brainstorming</b></td><td>Limited to your sources</td><td class="y">Strong, in many styles and languages</td></tr>
+      <tr><td><b>Podcast, video, mind map, quiz</b></td><td class="y">One click, built in</td><td>Not built in</td></tr>
+      <tr><td><b>Cost</b></td><td>Free, with paid plans</td><td>Free, with paid plans</td></tr>
     </tbody>
   </table>
-  <p class="foot">Other tools are catching up fast. Pick the tool that fits the task; NotebookLM is best when the answer must come from <i>your</i> material.</p>
-  <aside class="notes">Be fair to other tools. ChatGPT and Gemini are better for open-ended brainstorming; NotebookLM is best when accuracy to a specific syllabus matters.</aside>
+  <p class="foot">ChatGPT and Claude can also work from your uploaded files. The difference is the default: Gemini Notebook is <i>built</i> to stay inside your sources and prove it.</p>
+  <aside class="notes">Metaphor for the room: Gemini Notebook is a librarian who has read only your files and always shows you the page. ChatGPT and Claude are brilliant all-rounders who know a lot, write well and can do maths on a spreadsheet, but you have to check their facts. Be fair: both tools are good, they're built for different jobs. Specialist teacher apps (MagicSchool, Khanmigo) sit in between: templates for lesson plans and rubrics, less control over sources.</aside>
+</section>
+
+<!-- Same task -->
+<section class="slide">
+  <span class="kicker">The stark difference</span>
+  <h2>Same school task, which tool?</h2>
+  <table class="cmp">
+    <thead><tr><th style="width:34%">Task</th><th style="width:33%">Gemini Notebook</th><th>ChatGPT / Claude</th></tr></thead>
+    <tbody>
+      <tr><td><b>"What's the last date to upload Term 1 marks?"</b></td><td class="y">✓ Exact date, with the circular cited</td><td>Can't know it unless you attach the circular; may guess</td></tr>
+      <tr><td><b>"Class average in UT1 and UT2, who improved, and a chart"</b></td><td>Free plan may misread numbers</td><td class="y">✓ UT1 16.0 → UT2 16.5; 9 of 15 improved; chart drawn</td></tr>
+      <tr><td><b>"Which roll numbers are below 75% attendance?"</b></td><td class="y">✓ Lists them, each row cited</td><td class="y">✓ Filters the sheet</td></tr>
+      <tr><td><b>"Draft the Annual Day invitation to parents"</b></td><td>Good if last year's letter is a source</td><td class="y">✓ Strong first draft from scratch</td></tr>
+      <tr><td><b>"Turn Chapter 5 into a podcast and a quiz"</b></td><td class="y">✓ One click each</td><td>Writes a quiz; no podcast</td></tr>
+    </tbody>
+  </table>
+  <p class="hand">In your documents → Notebook. Calculate or create → ChatGPT / Claude.</p>
+  <aside class="notes">If you can, run the first two rows live. Row 1: ask ChatGPT or Claude "What's the last date to upload Term 1 marks at our school?" with no file. It will say it doesn't know or give a generic answer. Ask Gemini Notebook with the circular loaded: exact date, cited. Row 2: upload the sample class sheet from the lab guide to ChatGPT or Claude and ask for the averages and a chart. The numbers on the slide come from that sample sheet. Whatever tool you use: no student names, only roll numbers.</aside>
 </section>
 
 <!-- 18 -->
@@ -392,7 +453,7 @@ td.y{color:var(--green);font-weight:700}
   <h2>Five rules before you use it with students</h2>
   <div class="g2" style="grid-template-columns:1fr 1fr">
     <ul class="pts">
-      <li><b>No student personal data.</b> No names, marks, health or family details. India's DPDP Act, 2023 applies.</li>
+      <li><b>No identifiable student data.</b> Roll numbers only: no names, phone numbers, health or family details. India's DPDP Act, 2023 applies.</li>
       <li><b>Verify before you teach.</b> Click the citations. It can still misread a source.</li>
       <li><b>Respect copyright.</b> Upload only material you are allowed to use.</li>
     </ul>
@@ -402,7 +463,7 @@ td.y{color:var(--green);font-weight:700}
     </ul>
   </div>
   <p class="hand">AI prepares the draft. The teacher makes the lesson.</p>
-  <aside class="notes">Pause here and take questions on privacy. Google says personal-account uploads are not used to train its models, and Workspace for Education has further protections, but the safest rule is never to upload anything identifying students.</aside>
+  <aside class="notes">Pause here and take questions on privacy. Google says personal-account uploads are not used to train its models, and Workspace for Education has further protections, but the safest rule is never to upload anything identifying students. The same rule applies to ChatGPT, Claude and every other AI tool. For class lists: remove names, keep roll numbers, and match names back on your own computer.</aside>
 </section>
 
 <!-- 19 -->
@@ -411,7 +472,7 @@ td.y{color:var(--green);font-weight:700}
   <h2>Hands-on: build your first notebook</h2>
   <div class="g2" style="grid-template-columns:1.3fr 1fr;align-items:center">
     <div style="display:grid;gap:16px">
-      <p class="lede">Scan the code to open the <b>Hands-On Lab guide</b>. Follow the 14 steps with me now, then keep it for practising at home.</p>
+      <p class="lede">Scan the code to open the <b>Hands-On Lab guide</b>. Follow the 14 steps with me now, try the admin exercises in Part C, then keep it for practising at home.</p>
       <ul class="pts">
         <li>Go to <b>notebooklm.google.com</b> and sign in</li>
         <li>Use the sample text in the guide, or your own chapter</li>
