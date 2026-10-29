@@ -103,6 +103,13 @@ table.cmp th,table.cmp td{padding:8px 14px;font-size:18px;line-height:1.35}
 .prompt{background:var(--card);border:1.5px dashed var(--blue);border-radius:10px;padding:12px 16px;font-size:18.5px;line-height:1.4}
 .prompt b{display:block;font:700 13px var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:4px}
 
+/* spot-the-error worksheet */
+.ws ol{margin:0;padding-left:1.2em;display:grid;gap:12px;font-size:19px;line-height:1.4}
+.ws .fix{display:block;margin-top:5px;padding:5px 10px;border-radius:6px;background:var(--pink-soft);color:#A33A45;font-size:16.5px;font-weight:700}
+.ws .fix.ok{background:var(--green-soft);color:var(--green)}
+.frag{opacity:0;transition:opacity .3s}
+.frag.shown{opacity:1}
+
 .tight{gap:12px}.tight .card{padding:12px 18px;gap:4px}.tight .card p{font-size:17.5px;line-height:1.35}
 .refs{font-size:14.5px;line-height:1.45;color:var(--ink2);display:grid;gap:4px}
 .refs i{color:var(--ink)}
@@ -113,7 +120,8 @@ table.cmp th,table.cmp td{padding:8px 14px;font-size:18px;line-height:1.35}
 /* controls */
 .bar{position:fixed;left:0;right:0;top:0;height:5px;background:rgba(255,255,255,.08);z-index:3}
 .bar i{display:block;height:100%;width:0;background:var(--hl);transition:width .3s}
-.ctrl{position:fixed;right:16px;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;gap:6px;z-index:3;opacity:.35;transition:opacity .2s}
+.ctrl{position:fixed;right:16px;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;gap:6px;z-index:3;opacity:.75;transition:opacity .2s}
+.stage{cursor:pointer}
 .ctrl:hover,.ctrl:focus-within{opacity:1}
 .ctrl button{font:600 14px var(--body);background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:7px 12px;cursor:pointer}
 .ctrl button:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
@@ -144,7 +152,7 @@ table.cmp th,table.cmp td{padding:8px 14px;font-size:18px;line-height:1.35}
     <div class="card"><h3>1 · Understand</h3><p>What Gemini Notebook is, how it differs from ChatGPT and Claude, and when to use which.</p></div>
     <div class="card"><h3>2 · See it</h3><p>Every feature, for teaching <i>and</i> for admin work: circulars, class lists, meeting minutes, question papers.</p></div>
     <div class="card"><h3>3 · Do it</h3><p>A live demo while you follow along using the hands-on lab guide.</p></div>
-    <div class="card"><h3>4 · Plan it</h3><p>Classroom ideas by subject, prompt recipes, and rules for safe use.</p></div>
+    <div class="card"><h3>4 · Check it</h3><p>Why AI can be confidently wrong, a spot-the-error demo, and how to verify before anything reaches your class.</p></div>
   </div>
   <p class="hand">Laptops open for part 3!</p>
   <aside class="notes">Quick agenda. Suggested timing: 15 min concepts, 20 min feature tour, 40 min hands-on, 15 min ideas and Q&amp;A.</aside>
@@ -447,6 +455,65 @@ table.cmp th,table.cmp td{padding:8px 14px;font-size:18px;line-height:1.35}
   <aside class="notes">If you can, run the first two rows live. Row 1: ask ChatGPT or Claude "What's the last date to upload Term 1 marks at our school?" with no file. It will say it doesn't know or give a generic answer. Ask Gemini Notebook with the circular loaded: exact date, cited. Row 2: upload the sample class sheet from the lab guide to ChatGPT or Claude and ask for the averages and a chart. The numbers on the slide come from that sample sheet. Whatever tool you use: no student names, only roll numbers.</aside>
 </section>
 
+<!-- Hallucinations -->
+<section class="slide">
+  <span class="kicker">Hallucinations</span>
+  <h2>AI can be <mark>confidently wrong</mark></h2>
+  <p class="lede">Every AI tool, Gemini Notebook included, can produce mistakes that look polished and sound certain.</p>
+  <div class="g2 tight">
+    <div class="card"><h3>Incorrect facts</h3><p>Wrong definitions, dates or formulas, stated with full confidence.</p></div>
+    <div class="card"><h3>Misleading explanations</h3><p>A right answer for the wrong reason, or an analogy that plants a misconception.</p></div>
+    <div class="card"><h3>Fabricated references</h3><p>Books, papers, page numbers and links that don't exist.</p></div>
+    <div class="card"><h3>Inaccurate solutions</h3><p>Arithmetic slips and wrong answer keys that mark correct students wrong.</p></div>
+  </div>
+  <p class="hand">A polished answer is a draft, not a fact.</p>
+  <aside class="notes">Why this happens: the AI predicts the most likely next words. It doesn't check them against the truth. Answering from your sources (as Gemini Notebook does) reduces mistakes but doesn't remove them: it can still misread a table, mix up two sources or fill a gap. The danger isn't that AI is often wrong. It's that it is wrong in the same confident, well-formatted voice it uses when it is right, so the polish tells you nothing.</aside>
+</section>
+
+<!-- Spot the error demo -->
+<section class="slide">
+  <span class="kicker">Live demo · spot the error</span>
+  <h2>This worksheet looks ready. Is it?</h2>
+  <div class="g2" style="grid-template-columns:1.45fr 1fr;align-items:start">
+    <div class="card ws">
+      <h3>Class 7 · The Water Cycle · Worksheet <span class="chip">AI-generated</span></h3>
+      <ol>
+        <li>Evaporation is when water from seas, rivers and lakes turns into water vapour using heat from the Sun.<span class="fix ok frag">✓ Correct. Matches the textbook.</span></li>
+        <li>Condensation happens when water vapour is <b>heated</b> high in the sky and forms clouds.<span class="fix frag">✗ Fact: vapour <b>cools</b> and forms droplets. Checked against the textbook.</span></li>
+        <li>A tank holds 500 L and 2% evaporates in a day. How much is left? <b>Answer key: 450 L</b><span class="fix frag">✗ Answer key: 2% of 500 L = 10 L, so 490 L. Recalculated by hand.</span></li>
+        <li>Further reading: <i>Indian Journal of School Science</i>, 2019, Vol. 4, p. 45.<span class="fix frag">✗ Reference: not found in any library or search. Removed.</span></li>
+      </ol>
+    </div>
+    <div style="display:grid;gap:12px">
+      <div class="card"><h3>1 · Identify</h3><p>Read it as your student would. Mark every fact, number, answer and reference.</p></div>
+      <div class="card"><h3>2 · Verify</h3><p>Textbook, a reliable source, your own working. Not "Are you sure?" to the AI.</p></div>
+      <div class="card"><h3>3 · Correct</h3><p>Fix it, and keep the corrected copy for next year.</p></div>
+    </div>
+  </div>
+  <aside class="notes">Errors were planted on purpose for this demo, and the journal reference is invented. Give the room 60 seconds in pairs: "Would you print this? Find what's wrong." Then click to reveal each check one at a time (the next click after the last one moves to the next slide). Point out that the mistakes are in a fact, a number in the answer key and a reference: exactly what a busy teacher skims past. Optional live step: paste the worksheet into any AI chat and ask "Are you sure this is correct?". It often agrees with itself, or apologises and changes a correct answer. That's why asking the AI to check itself is not verification.</aside>
+</section>
+
+<!-- Teacher validation -->
+<section class="slide">
+  <span class="kicker">Teacher judgement</span>
+  <h2>Verify before it reaches the classroom</h2>
+  <p class="body" style="color:var(--ink2)">Lessons, worksheets, presentations, question papers: check each one for</p>
+  <div class="g3 tight">
+    <div class="card"><h3>Facts</h3><p>Definitions, dates and formulas against the textbook.</p></div>
+    <div class="card"><h3>Numbers</h3><p>Redo every calculation yourself.</p></div>
+    <div class="card"><h3>Answer keys</h3><p>Solve each question before you print the key.</p></div>
+    <div class="card"><h3>References</h3><p>Open every source. Can't find it? Drop it.</p></div>
+    <div class="card"><h3>Syllabus</h3><p>Matches your syllabus, blueprint and board.</p></div>
+    <div class="card"><h3>Learners</h3><p>Right level, language and examples for this class.</p></div>
+  </div>
+  <div class="row" style="gap:12px;font-size:20px;align-items:center">
+    <span class="chip g" style="font-size:17px">Verify with</span> textbooks · reliable sources · your subject expertise
+    <span class="chip p" style="font-size:17px;margin-left:18px">Not enough</span> asking the AI to check its own answer
+  </div>
+  <p class="hand">AI helps you prepare. You are responsible for what reaches the classroom.</p>
+  <aside class="notes">This is the slide to leave on screen while you take questions. The message from the department: AI can assist with preparation, but teachers remain responsible for the accuracy and educational quality of everything students see. Your judgement is the part the AI can't do: knowing your syllabus, your board's expectations and the 40 students in front of you.</aside>
+</section>
+
 <!-- 18 -->
 <section class="slide">
   <span class="kicker">Use it responsibly</span>
@@ -472,7 +539,7 @@ table.cmp th,table.cmp td{padding:8px 14px;font-size:18px;line-height:1.35}
   <h2>Hands-on: build your first notebook</h2>
   <div class="g2" style="grid-template-columns:1.3fr 1fr;align-items:center">
     <div style="display:grid;gap:16px">
-      <p class="lede">Scan the code to open the <b>Hands-On Lab guide</b>, or go to the workshop page below. Follow the 14 steps with me now, try the admin exercises in Part C, then keep it for practising at home.</p>
+      <p class="lede">Scan the code to open the <b>Hands-On Lab guide</b>, or go to the workshop page below. Follow the 15 steps with me now, try the admin exercises in Part C, then keep it for practising at home.</p>
       <ul class="pts">
         <li>Go to <b>notebooklm.google.com</b> and sign in</li>
         <li>Use the sample text in the guide, or your own chapter</li>
@@ -489,7 +556,7 @@ table.cmp th,table.cmp td{padding:8px 14px;font-size:18px;line-height:1.35}
 <section class="slide title-slide">
   <span class="kicker">Thank you</span>
   <h1>Build one notebook a week.</h1>
-  <p class="lede">Start with next week's chapter. In a month you'll have a library of verified, reusable teaching material.</p>
+  <p class="lede">Start with next week's chapter. Let the AI draft; you check, correct and decide. In a month you'll have a library of verified, reusable teaching material.</p>
   <p class="hand" style="font-size:44px">Questions?</p>
   <aside class="notes">Open the floor to questions. Remind everyone the lab guide link stays available for practice after the workshop.</aside>
 </section>
@@ -515,8 +582,20 @@ table.cmp th,table.cmp td{padding:8px 14px;font-size:18px;line-height:1.35}
     var s=Math.min(window.innerWidth/1330,window.innerHeight/760);
     slides.forEach(function(el){el.style.transform='scale('+s+')';});
   }
+  // Reveal the next hidden fragment on this slide before moving on.
+  function next(){
+    var f=slides[cur].querySelector('.frag:not(.shown)');
+    if(f){f.classList.add('shown');}else{show(cur+1);}
+  }
+  function prev(){
+    if(cur===0)return;
+    show(cur-1);
+    [].forEach.call(slides[cur].querySelectorAll('.frag'),function(f){f.classList.add('shown')});
+  }
   function show(i){
+    var was=cur;
     cur=Math.max(0,Math.min(slides.length-1,i));
+    if(cur!==was)[].forEach.call(slides[cur].querySelectorAll('.frag'),function(f){f.classList.remove('shown')});
     slides.forEach(function(el,j){el.classList.toggle('on',j===cur);el.setAttribute('aria-hidden',j===cur?'false':'true');});
     document.getElementById('prog').style.width=((cur+1)/slides.length*100)+'%';
     var n=slides[cur].querySelector('.notes');
@@ -530,21 +609,28 @@ table.cmp th,table.cmp td{padding:8px 14px;font-size:18px;line-height:1.35}
       else{var r=document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();if(r&&r.catch)r.catch(function(){});}
     }catch(e){}
   }
-  document.getElementById('prevBtn').onclick=function(){show(cur-1)};
-  document.getElementById('nextBtn').onclick=function(){show(cur+1)};
+  document.getElementById('prevBtn').onclick=prev;
+  document.getElementById('nextBtn').onclick=next;
+  // Click anywhere to advance; click the left quarter of the screen to go back.
+  document.getElementById('stage').addEventListener('click',function(e){
+    if(e.target.closest('a,button,input,select,textarea,summary'))return;
+    var sel=window.getSelection&&window.getSelection();
+    if(sel&&String(sel).length)return;
+    if(e.clientX<window.innerWidth*0.25)prev();else next();
+  });
   document.getElementById('notesBtn').onclick=toggleNotes;
   document.getElementById('fsBtn').onclick=fullscreen;
   document.addEventListener('keydown',function(e){
     var k=e.key;
-    if(k==='ArrowRight'||k==='PageDown'||k===' '||k==='Enter'){e.preventDefault();show(cur+1);}
-    else if(k==='ArrowLeft'||k==='PageUp'||k==='Backspace'){e.preventDefault();show(cur-1);}
+    if(k==='ArrowRight'||k==='PageDown'||k===' '||k==='Enter'){e.preventDefault();next();}
+    else if(k==='ArrowLeft'||k==='PageUp'||k==='Backspace'){e.preventDefault();prev();}
     else if(k==='Home'){show(0);}else if(k==='End'){show(slides.length-1);}
     else if(k==='n'||k==='N'){toggleNotes();}
     else if(k==='f'||k==='F'){fullscreen();}
   });
   var tx=null;
   document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX},{passive:true});
-  document.addEventListener('touchend',function(e){if(tx===null)return;var dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)show(cur+(dx<0?1:-1));tx=null;});
+  document.addEventListener('touchend',function(e){if(tx===null)return;var dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50){if(dx<0)next();else prev();}tx=null;});
   window.addEventListener('resize',fit);
 
 
