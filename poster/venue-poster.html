@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Future Classrooms Poster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Caveat:wght@700&display=swap">
+<style>
+/* A4 venue poster, black and white only. Sized in mm for print. */
+@page{size:A4 portrait;margin:0}
+:root{
+  --desk:#000; --paper:#fff; --rule:#DDDDDD; --margin:#9A9A9A;
+  --ink:#000; --ink2:#333; --blue:#000; --blue-soft:#EEE;
+  --hl:#fff; --line:#000;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --hand:"Caveat","Comic Sans MS",cursive;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:#8a93a6}
+body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.poster{width:210mm;height:297mm;margin:0 auto;position:relative;overflow:hidden;color:var(--ink);font-family:var(--body);
+  display:flex;flex-direction:column;
+  background:var(--paper)}
+.brand{background:#fff;padding:4.9mm 12.7mm 4.2mm;border-bottom:1.1mm solid var(--blue)}
+.brand img{display:block;width:100%;height:auto;filter:grayscale(1) contrast(1.15)}
+
+.main{flex:1;padding:16mm 12.7mm 0 24mm;display:flex;flex-direction:column;gap:8mm;position:relative}
+.event{margin-top:auto;font:800 8mm/1 var(--display);letter-spacing:.02em;color:var(--ink)}
+h1{margin:0;font:800 33mm/.9 var(--display);letter-spacing:-.035em}
+h1 mark{background:#000;color:#fff;padding:0 2mm}
+.sub{font:800 12mm/1.08 var(--display);color:var(--ink);letter-spacing:-.015em;border-top:.8mm solid #000;padding-top:6mm}
+
+.venue{margin:auto -12.7mm 0 -24mm;background:var(--desk);color:#fff;padding:7.8mm 12.7mm 8.5mm 24mm;display:grid;gap:7.1mm;align-items:center}
+.venue .at{font:700 3.5mm/1 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--hl)}
+.venue .room{font:800 28mm/.92 var(--display);letter-spacing:-.03em;margin-top:2.1mm}
+.venue .floor{display:flex;align-items:center;gap:2.8mm;font:800 7.8mm/1 var(--display);color:var(--hl);margin-top:2.8mm}
+.venue .floor svg{width:8.5mm;height:8.5mm;stroke:var(--hl);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.venue .bring{font-size:3.5mm;color:#ddd;margin-top:3.5mm}
+
+
+
+@media print{html,body{background:none}}
+</style>
+</head>
+<body>
+<div class="poster">
+  <div class="brand"><img src="../assets/sret-banner.png" alt="Sri Ramachandra Institute of Higher Education and Research, Sri Ramachandra Faculty of Engineering and Technology"></div>
+
+  <div class="main">
+    <div class="event">Tech Expo '26</div>
+    <h1><mark>Future</mark><br>Classrooms</h1>
+    <div class="sub">Hands-on AI Workshop<br>for Teachers</div>
+
+    <div class="venue">
+      <div>
+        <div class="at">Venue</div>
+        <div class="room">IoT Lab</div>
+        <div class="floor">Second Floor</div>      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

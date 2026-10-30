@@ -110,6 +110,13 @@ table.cmp th,table.cmp td{padding:8px 14px;font-size:18px;line-height:1.35}
 .frag{opacity:0;transition:opacity .3s}
 .frag.shown{opacity:1}
 
+/* side topic: Apps Script */
+.side .kicker{color:var(--green)}
+.side .tag{color:var(--green)}
+.code{margin:0;background:var(--ink);color:#E6ECF8;border-radius:12px;padding:20px 24px;font:18px/1.6 Consolas,"Cascadia Mono",monospace;white-space:pre;overflow:hidden}
+.code .c{color:#9FB3D9}.code .k{color:var(--hl)}
+.jump{color:var(--green);font-weight:700;text-decoration:none;border-bottom:2px solid currentColor}
+
 .tight{gap:12px}.tight .card{padding:12px 18px;gap:4px}.tight .card p{font-size:17.5px;line-height:1.35}
 .refs{font-size:14.5px;line-height:1.45;color:var(--ink2);display:grid;gap:4px}
 .refs i{color:var(--ink)}
@@ -155,6 +162,7 @@ table.cmp th,table.cmp td{padding:8px 14px;font-size:18px;line-height:1.35}
     <div class="card"><h3>4 · Check it</h3><p>Why AI can be confidently wrong, a spot-the-error demo, and how to verify before anything reaches your class.</p></div>
   </div>
   <p class="hand">Laptops open for part 3!</p>
+  <p class="body">Side topic, if time allows: <a class="jump" href="#apps-script">Explore Apps Script →</a></p>
   <aside class="notes">Quick agenda. Suggested timing: 15 min concepts, 20 min feature tour, 40 min hands-on, 15 min ideas and Q&amp;A.</aside>
 </section>
 
@@ -558,7 +566,116 @@ table.cmp th,table.cmp td{padding:8px 14px;font-size:18px;line-height:1.35}
   <h1>Build one notebook a week.</h1>
   <p class="lede">Start with next week's chapter. Let the AI draft; you check, correct and decide. In a month you'll have a library of verified, reusable teaching material.</p>
   <p class="hand" style="font-size:44px">Questions?</p>
-  <aside class="notes">Open the floor to questions. Remind everyone the lab guide link stays available for practice after the workshop.</aside>
+  <p class="body">Side topic: <a class="jump" href="#apps-script">Explore Apps Script →</a></p>
+  <aside class="notes">Open the floor to questions. Remind everyone the lab guide link stays available for practice after the workshop. If there's time, continue to the side topic on Apps Script.</aside>
+</section>
+
+<!-- Side topic: Apps Script -->
+<section class="slide title-slide side" id="apps-script">
+  <span class="tag">Side topic</span>
+  <span class="kicker">Side topic · Explore Apps Script</span>
+  <h1>Make Google Sheets, Forms and Docs <span style="color:var(--green)">do the boring work</span></h1>
+  <p class="lede">Apps Script is a small programming tool built into every Google account. It's free and needs no installing, and you don't have to be a programmer: an AI can write the script for you.</p>
+  <div class="row"><span class="chip g">Sheets</span><span class="chip g">Forms</span><span class="chip g">Docs</span><span class="chip g">Gmail</span><span class="chip g">Calendar</span><span class="chip g">Drive</span></div>
+  <aside class="notes">A 15-minute side topic. Ask: Who has copied the same thing into 40 rows, or made 40 certificates one by one? Apps Script is how you hand that job to Google. We already used one today: the quiz-to-Google-Form script in step 16 of the guide.</aside>
+</section>
+
+<section class="slide side">
+  <span class="kicker">Explore Apps Script · What it is</span>
+  <h2>A few lines of code that <mark>join your Google apps</mark> together</h2>
+  <div class="flow" style="margin-top:6px">
+    <div class="box"><h3>Your data</h3><ul><li>A Sheet of marks, a timetable, a quiz table</li><li>A Form's responses</li><li>A Doc template</li></ul></div>
+    <div class="arrow"><svg viewBox="0 0 48 30"><path d="M4 15h38M32 5l10 10-10 10"/></svg></div>
+    <div class="box" style="border-color:var(--green)"><h3>A script</h3><ul><li>Open it from <b>Extensions → Apps Script</b> in any Sheet, Doc or Form</li><li>Written in JavaScript</li><li>Runs on Google's computers, as you</li></ul></div>
+    <div class="arrow"><svg viewBox="0 0 48 30"><path d="M4 15h38M32 5l10 10-10 10"/></svg></div>
+    <div class="box"><h3>The result</h3><ul><li>A Form, Doc, Calendar event or email</li><li>A new menu in your Sheet</li><li>Done in seconds, every time</li></ul></div>
+  </div>
+  <div class="row" style="gap:10px;font-size:20px;align-items:center"><span class="chip g" style="font-size:16px">Run it</span> from a button or menu · when the Sheet opens · when a Form is submitted · every night at 8 pm</div>
+  <p class="hand">Sheets, Forms and Docs are the bricks. Apps Script is the cement.</p>
+  <aside class="notes">Key idea: Sheets, Forms, Docs, Gmail and Calendar each work well alone. Apps Script is the glue between them. Scripts can run when you click, or by themselves on a trigger: when a form is submitted, on a timer, when the file opens.</aside>
+</section>
+
+<section class="slide side">
+  <span class="kicker">Explore Apps Script · Ideas for teachers</span>
+  <h2>Jobs worth handing to a script</h2>
+  <div class="g3 tight">
+    <div class="card"><h3>Quiz → Google Form</h3><p>A quiz table becomes a self-marking Form quiz with scores in a Sheet. <b>Today's step 16.</b></p></div>
+    <div class="card"><h3>Certificates</h3><p>One Doc template and a list of names make 40 named PDF certificates in a Drive folder.</p></div>
+    <div class="card"><h3>Exam timetable</h3><p>A timetable Sheet turns into Calendar events with reminders for every exam.</p></div>
+    <div class="card"><h3>Marks analysis</h3><p>Class average, highest and lowest, and roll numbers below the pass mark, on one click.</p></div>
+    <div class="card"><h3>Form follow-up</h3><p>Each response to a feedback or consent Form gets a thank-you email automatically.</p></div>
+    <div class="card"><h3>Weekly reminder</h3><p>Every Friday, email yourself which assignments are still pending.</p></div>
+  </div>
+  <p class="hand">If you do it more than three times, script it.</p>
+  <aside class="notes">Ask the room which of these they'd use first. Certificates and the exam timetable are the usual favourites. Every one of these works on a personal Gmail account too, but for anything with student data use the school account and roll numbers only.</aside>
+</section>
+
+<section class="slide side">
+  <span class="kicker">Explore Apps Script · Read a script</span>
+  <h2>A short script: exam timetable → Google Calendar</h2>
+  <div class="g2" style="grid-template-columns:1.35fr 1fr;align-items:start">
+<pre class="code"><span class="k">function</span> addExamsToCalendar() {
+  <span class="c">// Read the Sheet: Class | Subject | Date</span>
+  <span class="k">var</span> rows = SpreadsheetApp.getActiveSheet()
+                 .getDataRange().getValues();
+  <span class="k">var</span> cal = CalendarApp.getDefaultCalendar();
+  <span class="c">// Skip the heading row, add one event per exam</span>
+  rows.slice(1).forEach(<span class="k">function</span> (r) {
+    cal.createAllDayEvent(
+      r[0] + <span class="k">' '</span> + r[1] + <span class="k">' exam'</span>, <span class="k">new</span> Date(r[2]));
+  });
+}</pre>
+    <div style="display:grid;gap:12px">
+      <div class="card"><h3>SpreadsheetApp</h3><p>Reads the rows from your Sheet.</p></div>
+      <div class="card"><h3>CalendarApp</h3><p>Opens your Google Calendar.</p></div>
+      <div class="card"><h3>forEach</h3><p>Repeats the same job for every row: 3 exams or 30.</p></div>
+    </div>
+  </div>
+  <aside class="notes">You don't need to write this, just be able to read it roughly. Every Google app has a name like this: SpreadsheetApp, CalendarApp, FormApp, DocumentApp, GmailApp, DriveApp. Read the script aloud in plain English: get the rows, open my calendar, for every row after the heading add an all-day event called "Class Subject exam" on that date. Being able to read it is what lets you check an AI-written script before you run it.</aside>
+</section>
+
+<section class="slide side">
+  <span class="kicker">Explore Apps Script · Let AI write it</span>
+  <h2>You describe it. <mark>AI writes it.</mark> You check it.</h2>
+  <div class="g2" style="grid-template-columns:1.2fr 1fr;align-items:start">
+    <div class="prompt"><b>Prompt for Gemini, ChatGPT or Claude</b>Write a Google Apps Script for a Google Sheet. Row 1 has headings: Roll No | Name | Certificate Title | Date. For every row, copy my Google Doc template (ID: ...), replace {{Name}}, {{Title}} and {{Date}}, save it as a PDF in a Drive folder called "Certificates", and add a menu called "Certificates" to run it. Then tell me, step by step, how to install and run it, and what each part does.</div>
+    <ol class="pts" style="font-size:20px">
+      <li><b>Describe</b> your columns and the result you want.</li>
+      <li><b>Paste</b> into Extensions → Apps Script, then Save.</li>
+      <li><b>Test</b> on a copy with 2–3 dummy rows.</li>
+      <li><b>Read</b> what it does: ask the AI to explain any line.</li>
+      <li><b>Fix</b> errors by pasting the error message back to the AI.</li>
+    </ol>
+  </div>
+  <p class="hand">Same rule as today: the AI drafts, you verify.</p>
+  <aside class="notes">This is the teacher's superpower: you know exactly what you want, and the AI knows the code. Be specific about column names and the result. If it fails, copy the red error message from the Execution log back into the chat; it usually fixes it in one go. Always test on a copy with made-up rows before the real class list.</aside>
+</section>
+
+<section class="slide side">
+  <span class="kicker">Explore Apps Script · Live demo</span>
+  <h2>Run your first script in 4 minutes</h2>
+  <div class="seq" style="grid-template-columns:repeat(4,1fr)">
+    <div class="card"><h3>Open</h3><p>Go to <b>sheets.new</b> and paste the quiz table from the guide.</p></div>
+    <div class="card"><h3>Paste</h3><p><b>Extensions → Apps Script</b>. Replace the code with the guide's script. Save.</p></div>
+    <div class="card"><h3>Run</h3><p>Choose <b>createQuizForm</b> and click <b>Run</b>. Allow the permissions.</p></div>
+    <div class="card"><h3>Use</h3><p>Open the new Form. Answer it once and see your score land in the Sheet.</p></div>
+  </div>
+  <div class="card" style="border-color:var(--green)"><p style="font-size:19px"><b>The permission screen:</b> "Google hasn't verified this app" appears for every script you make yourself. Click <b>Advanced → Go to (your project)</b>, then <b>Allow</b>. It's safe here because it's your script and you know what it does.</p></div>
+  <aside class="notes">Use step 16 of the hands-on guide; it has the prompt, the sample table and the full script with a Copy button. The permission screen is the moment most people stop, so walk through it on the projector. On school accounts the screen may look different, or the admin may have blocked Apps Script; ask your admin.</aside>
+</section>
+
+<section class="slide side">
+  <span class="kicker">Explore Apps Script · Use it safely</span>
+  <h2>A script acts <mark>as you</mark></h2>
+  <div class="g2 tight">
+    <div class="card"><h3>Only run scripts you understand</h3><p>A script can read your Drive and send email in your name. Never run code a stranger sends you.</p></div>
+    <div class="card"><h3>Test on a copy first</h3><p>Use a copy of the Sheet and dummy rows. A script can change 500 cells before you notice.</p></div>
+    <div class="card"><h3>Student data rules still apply</h3><p>Roll numbers, not names. Use the school account for anything about students.</p></div>
+    <div class="card"><h3>Know the limits</h3><p>Daily limits on emails and runs (lower on personal accounts). Your admin may switch Apps Script off.</p></div>
+  </div>
+  <p class="body">Start here: <b>developers.google.com/apps-script</b> · then pick one job from your week and ask an AI to script it.</p>
+  <p class="hand">Script one boring job this week.</p>
+  <aside class="notes">Wrap up the side topic. The homework: pick one repetitive job from this week and ask an AI to write the script. Test it on a copy. If it saves you ten minutes a week, that's six hours a year.</aside>
 </section>
 
 </main>
@@ -634,7 +751,14 @@ table.cmp th,table.cmp td{padding:8px 14px;font-size:18px;line-height:1.35}
   window.addEventListener('resize',fit);
 
 
-  var m=/^#s(\d+)$/.exec(location.hash);
-  fit(); show(m?parseInt(m[1],10)-1:0);
+  // #s5 opens slide 5; #apps-script (or any slide id) opens that slide.
+  function fromHash(){
+    var h=location.hash, m=/^#s(\d+)$/.exec(h);
+    if(m)return parseInt(m[1],10)-1;
+    var el=h.length>1&&document.getElementById(h.slice(1));
+    return el?slides.indexOf(el):-1;
+  }
+  window.addEventListener('hashchange',function(){var i=fromHash();if(i>=0&&i!==cur)show(i);});
+  fit(); show(Math.max(0,fromHash()));
 })();
 </script>
