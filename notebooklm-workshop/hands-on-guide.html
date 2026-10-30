@@ -72,6 +72,7 @@ ol.steps{list-style:none;margin:0;padding:0;display:grid;gap:14px;counter-reset:
 .step::before{content:counter(s);position:absolute;left:18px;top:16px;width:32px;height:32px;border-radius:50%;background:var(--blue-soft);color:var(--blue);font:800 1rem/32px var(--display);text-align:center}
 .step.done{border-color:var(--green);background:linear-gradient(var(--green-soft),var(--green-soft)) left/5px 100% no-repeat,var(--sheet)}
 .step.done::before{content:"✓";background:var(--green);color:var(--sheet)}
+.step,.step>*{min-width:0}
 .step-head{display:flex;justify-content:space-between;align-items:start;gap:12px}
 .step label.chk{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--ink2);cursor:pointer;white-space:nowrap}
 .step input[type=checkbox]{width:18px;height:18px;accent-color:var(--green)}
@@ -340,6 +341,141 @@ footer{margin-top:56px;padding-top:20px;border-top:2px solid var(--rule);color:v
           <li>You assigned the notebook yourself in Classroom. Notebooks that students make, or open from a plain shared link, stay private.</li>
         </ul></div>
         <p class="tip"><b>If Insights or transcripts don't appear:</b> show this list to your admin first. Most of the time, one of these settings is still switched off.</p>
+      </li>
+      <li class="step" data-id="s16">
+        <div class="step-head"><h3>Turn a notebook quiz into a Google Form that collects scores</h3><label class="chk"><input type="checkbox" id="c-s16"> Done</label></div>
+        <p>A quiz inside the notebook is for practice: you never see students' scores. When you need marks, make a Google Forms quiz. You don't have to type the questions in one by one.</p>
+        <ul>
+          <li>In the notebook's <b>Chat</b> (not the Studio Quiz button), ask for the quiz as a table:</li>
+        </ul>
+        <div class="prompt">Create 10 multiple-choice questions on this chapter from the sources. Give them as one table with exactly these columns: Question | Option A | Option B | Option C | Option D | Correct | Marks | Explanation. In Correct, write only the letter (A, B, C or D). In Explanation, give one line on why the answer is right. No other text.<button class="copy" type="button">Copy</button></div>
+        <ul>
+          <li><b>Check the table first</b>: every question, every option and especially the Correct column. This is your verification step.</li>
+          <li>Open a new Google Sheet (<span class="path">sheets.new</span>), click cell A1 and paste the table.</li>
+          <li>In the Sheet, go to <span class="path">Extensions → Apps Script</span>. Delete what's there, paste the script below, click 💾 <b>Save</b>, then <b>Run</b>.</li>
+          <li>The first time, Google asks for permission: choose your account, then <b>Advanced → Go to project (unsafe) → Allow</b>. This is your own script, so it's safe to allow. It only creates the Form and adds the responses tab.</li>
+          <li>Back in the Sheet, type a title. A box shows the <b>student link</b> and the <b>edit link</b>.</li>
+          <li>Open the edit link and check the Form once, then share the student link or attach the Form to a Google Classroom assignment.</li>
+        </ul>
+        <p class="see"><b>You should see:</b> a Google Form already set up as a quiz, with a Roll number box, every question, the correct answers and marks, and the explanation shown to students who get it wrong. Scores appear in a new <b>Form Responses</b> tab in your Sheet and under <b>Responses</b> in the Form.</p>
+        <div class="source">
+          <button class="copy" type="button" data-target="quizScript">Copy script</button>
+          <h3>Script: Sheet to Google Forms quiz</h3>
+          <pre id="quizScript" style="margin:0;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;overflow-x:auto;max-height:420px">/**
+ * Turn a quiz table in this Google Sheet into a self-marking Google Forms quiz.
+ *
+ * Sheet layout (row 1 = headings, one question per row):
+ *   Question | Option A | Option B | Option C | Option D | Correct | Marks | Explanation
+ * "Correct" is a letter (A-D) or the exact text of the right option.
+ * Marks and Explanation are optional (Marks defaults to 1).
+ * A table pasted as text into column A (with | between cells) also works.
+ *
+ * Use: Extensions &gt; Apps Script, paste this, Save, then Run "createQuizForm".
+ * After the first run there is also a "Quiz" menu in the Sheet.
+ */
+
+function onOpen() {
+  SpreadsheetApp.getUi().createMenu('Quiz')
+    .addItem('Create Google Form quiz', 'createQuizForm')
+    .addToUi();
+}
+
+function createQuizForm() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ui = SpreadsheetApp.getUi();
+  var rows = readQuizRows_(ss.getActiveSheet().getDataRange().getDisplayValues());
+
+  var answer = ui.prompt('Quiz title', 'For example: Class 12 Physics - Electromagnetic Induction - Quiz 1',
+    ui.ButtonSet.OK_CANCEL);
+  if (answer.getSelectedButton() !== ui.Button.OK) return;
+  var title = answer.getResponseText().trim() || ss.getName();
+
+  var form = FormApp.create(title);
+  form.setIsQuiz(true);
+  form.setCollectEmail(true);
+  form.setLimitOneResponsePerUser(false);
+  form.setDescription('Answer every question. Your score is shown after you submit.');
+  form.addTextItem().setTitle('Roll number').setRequired(true);
+
+  rows.forEach(function (q) {
+    var item = form.addMultipleChoiceItem();
+    item.setTitle(q.question)
+      .setChoices(q.options.map(function (opt, i) { return item.createChoice(opt, i === q.correct); }))
+      .setPoints(q.marks)
+      .setRequired(true);
+    if (q.explanation) {
+      item.setFeedbackForIncorrect(FormApp.createFeedback().setText(q.explanation).build());
+    }
+  });
+
+  // Responses (with scores) land in a new tab of this Sheet.
+  form.setDestination(FormApp.DestinationType.SPREADSHEET, ss.getId());
+
+  ui.alert('Quiz created: ' + rows.length + ' questions',
+    'Check it, then send students this link:\n' + form.getPublishedUrl() +
+    '\n\nEdit the form here:\n' + form.getEditUrl(), ui.ButtonSet.OK);
+}
+
+/** Turn sheet values into [{question, options, correct, marks, explanation}]. Throws on bad rows. */
+function readQuizRows_(values) {
+  values = values.map(splitPipeRow_).filter(function (r) {
+    return r.some(function (c) { return c !== ''; }) &amp;&amp; !isDividerRow_(r);
+  });
+  if (values.length &lt; 2) throw new Error('No questions found. Put headings in row 1 and one question per row.');
+
+  var head = values[0].map(function (h) { return h.toLowerCase(); });
+  var col = function (re) {
+    for (var i = 0; i &lt; head.length; i++) if (re.test(head[i])) return i;
+    return -1;
+  };
+  var qCol = col(/^question/), cCol = col(/^(correct|answer)/);
+  var mCol = col(/^(marks?|points?)/), eCol = col(/^(explanation|reason|feedback)/);
+  var optCols = [];
+  head.forEach(function (h, i) { if (/^option/.test(h)) optCols.push(i); });
+  if (qCol &lt; 0 || cCol &lt; 0 || optCols.length &lt; 2) {
+    throw new Error('Row 1 needs headings: Question, Option A, Option B, ..., Correct.');
+  }
+
+  return values.slice(1).map(function (r, n) {
+    var where = 'Row ' + (n + 2) + ': ';
+    var options = [], letters = [];
+    optCols.forEach(function (i, k) {
+      if ((r[i] || '') !== '') { options.push(r[i]); letters.push(String.fromCharCode(65 + k)); }
+    });
+    if (!r[qCol]) throw new Error(where + 'the question is empty.');
+    if (options.length &lt; 2) throw new Error(where + 'needs at least two options.');
+
+    var key = (r[cCol] || '').replace(/^option\s*/i, '').replace(/[).:]$/, '').trim();
+    var correct = letters.indexOf(key.toUpperCase());
+    if (correct &lt; 0) correct = options.indexOf(key);
+    if (correct &lt; 0) throw new Error(where + 'the correct answer "' + r[cCol] + '" is not one of the options.');
+
+    var marks = mCol &lt; 0 ? 1 : parseInt(r[mCol], 10);
+    return {
+      question: r[qCol], options: options, correct: correct,
+      marks: isNaN(marks) || marks &lt; 0 ? 1 : marks,
+      explanation: eCol &lt; 0 ? '' : (r[eCol] || '')
+    };
+  });
+}
+
+/** A Markdown table pasted as text lands in column A: split it on |. */
+function splitPipeRow_(r) {
+  var cells = r.map(function (c) { return String(c).trim(); });
+  var rest = cells.slice(1).join('');
+  if (rest === '' &amp;&amp; cells[0].indexOf('|') &gt;= 0) {
+    cells = cells[0].replace(/^\|/, '').replace(/\|$/, '').split('|')
+      .map(function (c) { return c.trim(); });
+  }
+  return cells;
+}
+
+function isDividerRow_(r) {
+  return r.every(function (c) { return /^:?-{2,}:?$/.test(c) || c === ''; });
+}</pre>
+        </div>
+        <p class="tip"><b>Next time:</b> paste a new table into a new Sheet. After the first run, the Sheet also has a <b>Quiz → Create Google Form quiz</b> menu. The Form collects students' email addresses, so they need to sign in with a Google account; to switch that off, use the Form's Settings → Responses.</p>
+        <p class="caution"><b>If you see "Row 5: the correct answer … is not one of the options":</b> that row's Correct column doesn't match an option. Fix that cell and run again. Nothing is created until every row is right.</p>
       </li>
     </ol>
   </section>
