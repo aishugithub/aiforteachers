@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Apps Script Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Caveat:wght@600&display=swap">
+<style>
+:root{
+  --paper:#F5F8FC; --sheet:#FFFFFF; --rule:#DDE6F2; --margin:#E0676B;
+  --ink:#16223D; --ink2:#4B5A7A; --blue:#2A54C8; --blue-soft:#E4ECFD;
+  --hl:#FFE45C; --hl-ink:#16223D; --green:#1E8A4C; --green-soft:#DDF5E6;
+  --warn:#B4541A; --warn-soft:#FDEBDD; --line:#D3DDEB; --code:#16223D; --code-ink:#E6ECF8;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --hand:"Caveat", "Comic Sans MS", cursive;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#0F1628; --sheet:#172038; --rule:#1E2944; --margin:#C9575B;
+    --ink:#E6ECF8; --ink2:#A7B4D0; --blue:#8FAAFF; --blue-soft:#1F2C52;
+    --green:#6FD99A; --green-soft:#153826; --warn:#F2A26B; --warn-soft:#3A2415; --line:#2A3657; --code:#0A1020;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#0F1628; --sheet:#172038; --rule:#1E2944; --margin:#C9575B;
+  --ink:#E6ECF8; --ink2:#A7B4D0; --blue:#8FAAFF; --blue-soft:#1F2C52;
+  --green:#6FD99A; --green-soft:#153826; --warn:#F2A26B; --warn-soft:#3A2415; --line:#2A3657; --code:#0A1020;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.6 var(--body)}
+.wrap{max-width:880px;margin:0 auto;padding-inline:20px;padding-block:0 80px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.7rem;font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.2rem;font-weight:600}
+p{margin:0}
+a{color:var(--blue)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--blue-soft);padding:.1em .35em;border-radius:4px}
+.eyebrow{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--green)}
+.hand{font-family:var(--hand);font-size:1.45rem;color:var(--margin);line-height:1.1}
+.lede{color:var(--ink2);max-width:65ch}
+.path{font-weight:700}
+
+header.top{padding-block:40px 28px;border-bottom:2px solid var(--rule);display:grid;gap:14px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--ink2);font-size:.95rem}
+.meta b{color:var(--ink)}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.theme-btn{font:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:8px;padding:4px 10px;cursor:pointer}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+nav.toc a{font-size:.9rem;text-decoration:none;border:1px solid var(--line);background:var(--sheet);padding:4px 12px;border-radius:99px;color:var(--ink)}
+nav.toc a:hover{border-color:var(--green);color:var(--green)}
+
+section{padding-top:48px;display:grid;gap:18px}
+.card{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:18px 20px;display:grid;gap:10px;min-width:0}
+.card ol,.card ul{margin:0;padding-left:1.25em;display:grid;gap:6px}
+.story{border-left:5px solid var(--green)}
+.story p{font-size:1.05rem}
+.see{font-size:.95rem;color:var(--ink2);border-left:3px solid var(--rule);padding-left:12px}
+.see b{color:var(--ink)}
+.tip{font-size:.95rem;background:var(--blue-soft);border-radius:8px;padding:10px 12px}
+.tip b{color:var(--blue)}
+.caution{font-size:.95rem;background:var(--warn-soft);border-radius:8px;padding:10px 12px}
+.caution b{color:var(--warn)}
+
+.moves{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;counter-reset:m}
+.moves li{counter-increment:m;background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:44px 14px 14px;position:relative;font-size:.95rem}
+.moves li::before{content:counter(m);position:absolute;left:14px;top:12px;width:26px;height:26px;border-radius:50%;background:var(--green);color:var(--sheet);font:800 .9rem/26px var(--display);text-align:center}
+.moves li>b:first-child{display:block;font-family:var(--display);font-size:1.05rem}
+
+.block{position:relative;min-width:0}
+.block h3{font-size:1rem;margin-bottom:6px;color:var(--ink2)}
+.block pre{margin:0;background:var(--code);color:var(--code-ink);border-radius:10px;padding:14px 16px;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;overflow:auto;max-height:380px;tab-size:16}
+.block pre.data{background:var(--sheet);color:var(--ink);border:1px solid var(--line);max-height:none}
+.copy{position:absolute;top:-4px;right:0;font:700 .8rem var(--body);border:1px solid var(--green);color:var(--green);background:var(--sheet);border-radius:6px;padding:4px 10px;cursor:pointer}
+.copy.ok{border-color:var(--blue);color:var(--blue)}
+.copy:focus-visible,.theme-btn:focus-visible,nav.toc a:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--sheet)}
+table{border-collapse:collapse;width:100%;font:inherit;font-size:.95rem}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--display);font-weight:600;background:var(--green-soft)}
+tr:last-child td{border-bottom:0}
+details{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+details summary{cursor:pointer;font-weight:700}
+details p{margin-top:8px;color:var(--ink2)}
+.faq{display:grid;gap:10px}
+footer{margin-top:56px;padding-top:20px;border-top:2px solid var(--rule);color:var(--ink2);font-size:.9rem}
+@media (max-width:520px){body{font-size:16px}.card{padding:16px 14px}}
+@media print{.copy,.theme-btn,nav.toc{display:none}.card{break-inside:avoid}.block pre{max-height:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="topbar">
+      <a href="../index.html" style="font-size:.9rem;text-decoration:none">← Workshop home</a>
+      <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch light or dark theme">Theme</button>
+    </div>
+    <span class="eyebrow">Side topic · Explore Apps Script</span>
+    <h1>Apps Script Lab: four school jobs, done in one click</h1>
+    <p class="lede">Four everyday situations from school, each with sample data, a ready script and the exact steps to run it. The last one publishes your mark list as a web page. Do them along with the demo, then change the data to your own.</p>
+    <div class="meta">
+      <span><b>You need:</b> a Google account and a laptop</span>
+      <span><b>Time:</b> about 10 minutes per sample</span>
+      <span><b>Start at:</b> <a href="https://sheets.new" target="_blank" rel="noopener">sheets.new</a></span>
+    </div>
+    <nav class="toc" aria-label="Sections">
+      <a href="#moves">The 6 moves</a><a href="#exams">1 · Exam timetable</a><a href="#certs">2 · Certificates</a><a href="#marks">3 · Marks analysis</a><a href="#web">4 · Marks web page</a><a href="#deploy">Share and automate</a><a href="#help">If something goes wrong</a>
+    </nav>
+  </header>
+
+  <section id="moves">
+    <span class="eyebrow">Every sample, the same way</span>
+    <h2>The 6 moves</h2>
+    <ol class="moves">
+      <li><b>Open a Sheet</b>Go to <span class="path">sheets.new</span>.</li>
+      <li><b>Paste the data</b>Click <b>Copy data</b> below, click cell A1, press Ctrl+V.</li>
+      <li><b>Open the editor</b><span class="path">Extensions → Apps Script</span>. A new tab opens.</li>
+      <li><b>Paste the script</b>Delete what's there, paste, click 💾 <b>Save</b>.</li>
+      <li><b>Run</b>Pick the function in the drop-down at the top and click <b>▷ Run</b>.</li>
+      <li><b>Allow, once</b><b>Review permissions</b> → your account → <b>Advanced → Go to … (unsafe) → Allow</b>.</li>
+    </ol>
+    <p class="tip"><b>Why "unsafe"?</b> Google shows this for every script that you write yourself, because Google hasn't reviewed it. It's safe here because it's your script and you can read what it does. Never allow a script from someone you don't know.</p>
+    <p class="tip"><b>Watch the right tab.</b> Messages from the script (small pop-ups at the bottom right) appear in the <b>Sheet</b> tab, not in the editor. The editor shows progress in the <b>Execution log</b>.</p>
+  </section>
+
+  <!-- 1 -->
+  <section id="exams">
+    <span class="eyebrow">Sample 1 · Exam cell</span>
+    <h2>Exam timetable → Google Calendar</h2>
+    <div class="card story">
+      <p><b>The situation:</b> the Term 1 timetable for Class 9A is ready in a Sheet. Every teacher and student needs it in their calendar, with a reminder the evening before. Typing five events by hand is slow, and typing them for twelve sections is a whole afternoon.</p>
+    </div>
+    <div class="card">
+      <div class="block">
+        <h3>Sample data: paste into cell A1</h3>
+        <button class="copy" type="button" data-target="data1">Copy data</button>
+        <pre class="data" id="data1">Date	Start	End	Class	Subject	Room	Status
+2026-11-16	09:30	12:30	9A	Mathematics	Room 12
+2026-11-17	09:30	12:30	9A	Science	Room 12
+2026-11-18	09:30	12:30	9A	English	Room 12
+2026-11-19	09:30	11:30	9A	Social Science	Room 14
+2026-11-20	09:30	11:30	9A	Tamil	Room 14</pre>
+      </div>
+      <div class="block">
+        <h3>Script</h3>
+        <button class="copy" type="button" data-target="script1">Copy script</button>
+        <pre id="script1">/**
+ * Exam timetable -&gt; Google Calendar.
+ *
+ * Sheet layout (row 1 = headings, one exam per row):
+ *   Date | Start | End | Class | Subject | Room | Status
+ * Every exam goes into a calendar called "Term 1 Exams" (made if missing), with a
+ * reminder the day before. Rows already marked "Added" are skipped, so it is safe
+ * to run again after adding more exams.
+ *
+ * Use: Extensions &gt; Apps Script, paste this, Save, then Run "addExamsToCalendar".
+ * After the first run there is also an "Exams" menu in the Sheet.
+ */
+
+var CALENDAR_NAME = 'Term 1 Exams';
+var REMIND_MINUTES_BEFORE = 24 * 60;   // one day
+
+function onOpen() {
+  SpreadsheetApp.getUi().createMenu('Exams')
+    .addItem('Add exams to Calendar', 'addExamsToCalendar')
+    .addToUi();
+}
+
+function addExamsToCalendar() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getActiveSheet();
+  var range = sheet.getDataRange();
+  var values = range.getValues();          // dates as real dates
+  var shown = range.getDisplayValues();    // times as typed, e.g. 09:30
+  var tz = ss.getSpreadsheetTimeZone();
+
+  var cal = CalendarApp.getCalendarsByName(CALENDAR_NAME)[0] || CalendarApp.createCalendar(CALENDAR_NAME);
+  var added = 0;
+
+  for (var i = 1; i &lt; values.length; i++) {
+    var r = values[i], s = shown[i];
+    if (!r[0] || String(r[6]).indexOf('Added') === 0) continue;   // empty or done
+
+    var day = r[0] instanceof Date ? Utilities.formatDate(r[0], tz, 'yyyy-MM-dd') : toIsoDate_(s[0], i);
+    var start = Utilities.parseDate(day + ' ' + toTime_(s[1], i), tz, 'yyyy-MM-dd HH:mm');
+    var end = Utilities.parseDate(day + ' ' + toTime_(s[2], i), tz, 'yyyy-MM-dd HH:mm');
+
+    var event = cal.createEvent(r[3] + ' ' + r[4] + ' exam', start, end, {
+      location: String(r[5]),
+      description: 'Class ' + r[3] + ' · ' + r[4] + ' · Room ' + r[5]
+    });
+    event.removeAllReminders();
+    event.addPopupReminder(REMIND_MINUTES_BEFORE);
+
+    sheet.getRange(i + 1, 7).setValue('Added ✓');
+    added++;
+  }
+  ss.toast(added + ' exam(s) added to the "' + CALENDAR_NAME + '" calendar.', 'Exams', 10);
+}
+
+/** "9:30", "09:30:00" or "2:00 PM" -&gt; "HH:mm". */
+function toTime_(text, i) {
+  var m = /(\d{1,2})[:.](\d{2})(?::\d{2})?\s*([ap])?/i.exec(text);
+  if (!m) throw new Error('Row ' + (i + 1) + ': the time "' + text + '" is not like 09:30.');
+  var h = parseInt(m[1], 10);
+  if (m[3] &amp;&amp; /p/i.test(m[3]) &amp;&amp; h &lt; 12) h += 12;
+  if (m[3] &amp;&amp; /a/i.test(m[3]) &amp;&amp; h === 12) h = 0;
+  return (h &lt; 10 ? '0' : '') + h + ':' + m[2];
+}
+
+/** A date typed as text: 2026-11-16 or 16/11/2026 (day first, as in India). */
+function toIsoDate_(text, i) {
+  var m = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(text) || /^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/.exec(text);
+  if (!m) throw new Error('Row ' + (i + 1) + ': the date "' + text + '" is not like 2026-11-16.');
+  var y = m[1].length === 4 ? m[1] : m[3], mo = m[2], d = m[1].length === 4 ? m[3] : m[1];
+  return y + '-' + ('0' + mo).slice(-2) + '-' + ('0' + d).slice(-2);
+}</pre>
+      </div>
+      <ol>
+        <li>Do the 6 moves. In the drop-down, choose <code>addExamsToCalendar</code>.</li>
+        <li>Open <a href="https://calendar.google.com" target="_blank" rel="noopener">Google Calendar</a> and go to the week of 16 November 2026.</li>
+      </ol>
+      <p class="see"><b>You should see:</b> a new calendar called <b>Term 1 Exams</b> in the left list, five exam events with the room as location, and a reminder one day before each. In the Sheet, the Status column says <b>Added ✓</b>. Run it again and nothing is added twice.</p>
+      <p class="tip"><b>Share it:</b> in Calendar, open the ⋮ next to <i>Term 1 Exams</i> → <b>Settings and sharing</b> → share with your colleagues, or get the public link for students and parents.</p>
+      <p class="caution"><b>After the demo:</b> to remove everything, open the ⋮ next to <i>Term 1 Exams</i> → <b>Settings and sharing</b> → <b>Remove calendar</b>. Your own calendar is not touched.</p>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section id="certs">
+    <span class="eyebrow">Sample 2 · Events and competitions</span>
+    <h2>Certificates in one click</h2>
+    <div class="card story">
+      <p><b>The situation:</b> the Inter-house Quiz is over. The winners and participants need certificates by tomorrow's assembly. Instead of editing one Word file 40 times, keep the list in a Sheet and let the script make a PDF for each student.</p>
+    </div>
+    <div class="card">
+      <div class="block">
+        <h3>Sample data: paste into cell A1 (made-up names)</h3>
+        <button class="copy" type="button" data-target="data2">Copy data</button>
+        <pre class="data" id="data2">Name	Class	Event	Position	Date	Certificate
+Aarav Kumar	8B	the Inter-house Quiz 2026	First Place	14th November 2026
+Diya Shankar	8A	the Inter-house Quiz 2026	Second Place	14th November 2026
+Kavin Raj	7C	the Inter-house Quiz 2026	Third Place	14th November 2026
+Meera Prakash	7A	the Inter-house Quiz 2026	Participation	14th November 2026
+Nila Varun	6B	the Inter-house Quiz 2026	Participation	14th November 2026</pre>
+      </div>
+      <div class="block">
+        <h3>Script</h3>
+        <button class="copy" type="button" data-target="script2">Copy script</button>
+        <pre id="script2">/**
+ * Certificates in one click.
+ *
+ * Sheet layout (row 1 = headings, one student per row):
+ *   Name | Class | Event | Position | Date | Certificate
+ * The first run makes a certificate template in Google Docs (you can edit its
+ * wording and design). Each row then becomes a PDF in a Drive folder called
+ * "Certificates", and its link goes in the Certificate column. Rows that
+ * already have a link are skipped.
+ *
+ * Template placeholders: {{Name}} {{Class}} {{Event}} {{Position}} {{Date}}
+ *
+ * Use: Extensions &gt; Apps Script, paste this, Save, then Run "makeCertificates".
+ * After the first run there is also a "Certificates" menu in the Sheet.
+ */
+
+var SCHOOL_NAME = 'Your School Name';   // change to your school
+var FOLDER_NAME = 'Certificates';
+
+function onOpen() {
+  SpreadsheetApp.getUi().createMenu('Certificates')
+    .addItem('Make certificates', 'makeCertificates')
+    .addItem('Open the template', 'openTemplate')
+    .addToUi();
+}
+
+function makeCertificates() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getActiveSheet();
+  var values = sheet.getDataRange().getDisplayValues();
+  var template = DriveApp.getFileById(getTemplateId_());
+  var folder = getFolder_(FOLDER_NAME);
+  var made = 0;
+
+  for (var i = 1; i &lt; values.length; i++) {
+    var r = values[i];
+    if (!r[0] || r[5]) continue;   // no name, or already made
+
+    var copy = template.makeCopy(r[0] + ' - ' + r[2], folder);
+    var doc = DocumentApp.openById(copy.getId());
+    var body = doc.getBody();
+    ['Name', 'Class', 'Event', 'Position', 'Date'].forEach(function (key, k) {
+      body.replaceText('\\{\\{' + key + '\\}\\}', r[k]);
+    });
+    doc.saveAndClose();
+
+    var pdf = folder.createFile(copy.getAs('application/pdf')).setName(r[0] + ' - ' + r[2] + '.pdf');
+    copy.setTrashed(true);   // keep only the PDF
+    sheet.getRange(i + 1, 6).setValue(pdf.getUrl());
+    made++;
+    ss.toast(made + ' certificate(s) made...', 'Certificates', 5);
+  }
+  ss.toast(made + ' certificate(s) saved in the "' + FOLDER_NAME + '" folder in Drive.', 'Certificates', 10);
+}
+
+function openTemplate() {
+  var url = DocumentApp.openById(getTemplateId_()).getUrl();
+  SpreadsheetApp.getActiveSpreadsheet().toast('Template: ' + url, 'Certificates', 20);
+  Logger.log('Template: ' + url);
+}
+
+/** The template's ID is remembered in this Sheet. If it's missing or deleted, make a new one. */
+function getTemplateId_() {
+  var props = PropertiesService.getDocumentProperties();
+  var id = props.getProperty('templateId');
+  if (id) {
+    try { if (!DriveApp.getFileById(id).isTrashed()) return id; } catch (e) { /* deleted */ }
+  }
+  id = createTemplate_();
+  props.setProperty('templateId', id);
+  return id;
+}
+
+/** A simple landscape A4 certificate. Edit the Doc afterwards to change the design. */
+function createTemplate_() {
+  var doc = DocumentApp.create('Certificate template');
+  var body = doc.getBody();
+  body.setPageWidth(842).setPageHeight(595)
+    .setMarginTop(60).setMarginBottom(40).setMarginLeft(72).setMarginRight(72);
+  body.clear();
+
+  var lines = [
+    [SCHOOL_NAME, 20, true, '#16223D'],
+    ['CERTIFICATE OF ACHIEVEMENT', 30, true, '#2A54C8'],
+    ['This is to certify that', 14, false, '#4B5A7A'],
+    ['{{Name}}', 34, true, '#16223D'],
+    ['of Class {{Class}}, for {{Position}} in {{Event}}', 16, false, '#16223D'],
+    ['held on {{Date}}.', 14, false, '#4B5A7A'],
+    ['', 30, false, '#16223D'],
+    ['Class Teacher                                                                Principal', 13, true, '#16223D']
+  ];
+  lines.forEach(function (l, k) {
+    var p = k === 0 ? body.getParagraphs()[0].setText(l[0]) : body.appendParagraph(l[0]);
+    p.setAlignment(DocumentApp.HorizontalAlignment.CENTER).setSpacingAfter(10)
+      .editAsText().setFontSize(l[1]).setBold(l[2]).setForegroundColor(l[3]).setFontFamily('Georgia');
+  });
+  doc.saveAndClose();
+  return doc.getId();
+}
+
+function getFolder_(name) {
+  var found = DriveApp.getFoldersByName(name);
+  return found.hasNext() ? found.next() : DriveApp.createFolder(name);
+}</pre>
+      </div>
+      <ol>
+        <li>In the script, change <code>SCHOOL_NAME</code> on line 17 to your school's name. Save.</li>
+        <li>Do the 6 moves. In the drop-down, choose <code>makeCertificates</code>. It takes a few seconds per student.</li>
+        <li>Open <a href="https://drive.google.com" target="_blank" rel="noopener">Google Drive</a> → the <b>Certificates</b> folder.</li>
+      </ol>
+      <p class="see"><b>You should see:</b> five PDF certificates, one per student, named like <i>Aarav Kumar - the Inter-house Quiz 2026.pdf</i>. The Certificate column in the Sheet now has a link to each one.</p>
+      <p class="tip"><b>Make it yours:</b> the first run also creates a Google Doc called <b>Certificate template</b> in your Drive. Open it and change the wording, fonts or colours, or add the school logo. Keep the words in <code>{{ }}</code> as they are. Then clear the Certificate column and run again.</p>
+      <p class="caution"><b>Names are personal data.</b> A certificate needs the student's name, so keep this Sheet and the Certificates folder in your school account and share them only with the staff who need them.</p>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section id="marks">
+    <span class="eyebrow">Sample 3 · Class teacher</span>
+    <h2>Unit-test marks analysis</h2>
+    <div class="card story">
+      <p><b>The situation:</b> Unit Test 1 marks for Class 9A are in. Before the parent-teacher meeting you need the average per subject, who scored below the pass mark, and which students need remedial classes. Doing it by hand means sorting, counting and colouring cells for an hour.</p>
+    </div>
+    <div class="card">
+      <div class="block">
+        <h3>Sample data: paste into cell A1 (roll numbers only, marks out of 100)</h3>
+        <button class="copy" type="button" data-target="data3">Copy data</button>
+        <pre class="data" id="data3">Roll No	Maths	Science	English	Social	Tamil
+9A01	78	82	71	69	88
+9A02	32	41	55	38	60
+9A03	91	88	84	90	79
+9A04	45	29	62	33	58
+9A05	66	71	AB	64	72
+9A06	28	34	48	41	52
+9A07	84	79	88	82	91
+9A08	55	62	59	47	66
+9A09	39	44	67	52	70
+9A10	72	68	74	77	81
+9A11	30	33	41	29	45
+9A12	61	57	69	58	73
+9A13	87	92	80	85	89
+9A14	49	38	56	44	62
+9A15	58	63	71	66	68</pre>
+      </div>
+      <div class="block">
+        <h3>Script</h3>
+        <button class="copy" type="button" data-target="script3">Copy script</button>
+        <pre id="script3">/**
+ * Unit-test marks analysis.
+ *
+ * Sheet layout (row 1 = headings): Roll No | Subject 1 | Subject 2 | ...
+ * Marks out of 100. Any number of subjects. Use roll numbers, not names.
+ * Makes a "Summary" tab: average, highest, lowest and pass % per subject, who is
+ * below the pass mark in each subject, a remedial list (below the pass mark in
+ * two or more subjects) and a chart. Marks below the pass mark turn pink.
+ *
+ * Use: Extensions &gt; Apps Script, paste this, Save, then Run "analyseMarks".
+ * After the first run there is also a "Marks" menu in the Sheet.
+ */
+
+var PASS_MARK = 35;
+
+function onOpen() {
+  SpreadsheetApp.getUi().createMenu('Marks')
+    .addItem('Analyse marks', 'analyseMarks')
+    .addToUi();
+}
+
+function analyseMarks() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getActiveSheet();
+  if (sheet.getName() === 'Summary') throw new Error('Click the marks tab first, then run again.');
+
+  var values = sheet.getDataRange().getValues();
+  var subjects = values[0].slice(1);
+  var students = values.slice(1).filter(function (r) { return r[0] !== ''; });
+  if (!students.length) throw new Error('No marks found. Put headings in row 1: Roll No, then one column per subject.');
+
+  // Per-subject statistics, and who is below the pass mark.
+  var stats = [['Subject', 'Average', 'Highest', 'Lowest', 'Pass %', 'Below ' + PASS_MARK + ' (roll numbers)']];
+  var fails = {};   // roll number -&gt; subjects below the pass mark
+  subjects.forEach(function (subject, s) {
+    var marks = [], below = [];
+    students.forEach(function (r) {
+      var m = r[s + 1];
+      if (typeof m !== 'number') return;   // absent or blank
+      marks.push(m);
+      if (m &lt; PASS_MARK) {
+        below.push(r[0]);
+        (fails[r[0]] = fails[r[0]] || []).push(subject);
+      }
+    });
+    var sum = marks.reduce(function (a, b) { return a + b; }, 0);
+    stats.push([subject,
+      marks.length ? Math.round(sum / marks.length * 10) / 10 : '',
+      marks.length ? Math.max.apply(null, marks) : '',
+      marks.length ? Math.min.apply(null, marks) : '',
+      marks.length ? Math.round((marks.length - below.length) / marks.length * 100) + '%' : '',
+      below.join(', ') || 'None']);
+  });
+
+  var remedial = [['Roll No', 'Subjects below ' + PASS_MARK]];
+  Object.keys(fails).forEach(function (roll) {
+    if (fails[roll].length &gt;= 2) remedial.push([roll, fails[roll].join(', ')]);
+  });
+  if (remedial.length === 1) remedial.push(['None', '']);
+
+  // Write the Summary tab from scratch each time.
+  var out = ss.getSheetByName('Summary') || ss.insertSheet('Summary');
+  out.clear();
+  out.getCharts().forEach(function (c) { out.removeChart(c); });
+  out.getRange(1, 1).setValue('Marks summary · ' + students.length + ' students · pass mark ' + PASS_MARK)
+    .setFontSize(14).setFontWeight('bold');
+  out.getRange(3, 1, stats.length, stats[0].length).setValues(stats);
+  out.getRange(3, 1, 1, stats[0].length).setFontWeight('bold').setBackground('#E3EBFD');
+
+  var rRow = stats.length + 5;
+  out.getRange(rRow - 1, 1).setValue('Remedial group: below the pass mark in two or more subjects').setFontWeight('bold');
+  out.getRange(rRow, 1, remedial.length, 2).setValues(remedial);
+  out.getRange(rRow, 1, 1, 2).setFontWeight('bold').setBackground('#FDE2E6');
+  out.autoResizeColumns(1, stats[0].length);
+
+  out.insertChart(out.newChart()
+    .setChartType(Charts.ChartType.COLUMN)
+    .addRange(out.getRange(3, 1, stats.length, 2))
+    .setPosition(3, 8, 0, 0)
+    .setOption('title', 'Class average by subject')
+    .setOption('legend', { position: 'none' })
+    .setOption('vAxis', { minValue: 0, maxValue: 100 })
+    .build());
+
+  // Pink background on every mark below the pass mark in the marks tab.
+  var markRange = sheet.getRange(2, 2, values.length - 1, subjects.length);
+  var colours = markRange.getValues().map(function (row) {
+    return row.map(function (m) { return typeof m === 'number' &amp;&amp; m &lt; PASS_MARK ? '#FDE2E6' : null; });
+  });
+  markRange.setBackgrounds(colours);
+
+  ss.toast('Summary ready: ' + (remedial[1][0] === 'None' ? 0 : remedial.length - 1) + ' student(s) in the remedial group.', 'Marks', 10);
+}</pre>
+      </div>
+      <ol>
+        <li>Do the 6 moves. In the drop-down, choose <code>analyseMarks</code>.</li>
+        <li>Go back to the Sheet tab.</li>
+      </ol>
+      <p class="see"><b>You should see:</b> every mark below 35 is now pink. A new <b>Summary</b> tab shows the average, highest, lowest and pass % for each subject, the roll numbers below 35 in each subject, a <b>remedial group</b> (9A04, 9A06 and 9A11 are below 35 in two or more subjects) and a column chart of the averages. "AB" (absent) is left out of the calculations.</p>
+      <p class="tip"><b>Try changing:</b> set <code>PASS_MARK</code> to 40 on line 14, Save, and run again. The Summary is rebuilt each time. Add a sixth subject column and it's included automatically.</p>
+      <p class="tip"><b>Check it like any AI output:</b> work out one subject's average yourself and compare. Once you have checked a script, it gives the same right answer every time.</p>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section id="web">
+    <span class="eyebrow">Sample 4 · Deploy as a web app</span>
+    <h2>The mark list as a web page</h2>
+    <div class="card story">
+      <p><b>The situation:</b> the HOD and the class teacher want to see Class 9A's marks on their phones during the parent-teacher meeting, without opening the spreadsheet. Publish the Sheet as a small web page: one link that always shows the latest marks.</p>
+    </div>
+    <div class="card">
+      <p>Use the <b>same Sheet as Sample 3</b>, or paste the <a href="#data3">Sample 3 data</a> into a new Sheet. If you already have Sample 3's script, click <b>＋ → Script</b> in the editor and paste this as a second file.</p>
+      <div class="block">
+        <h3>Script</h3>
+        <button class="copy" type="button" data-target="script4">Copy script</button>
+        <pre id="script4">/**
+ * The mark list as a web page.
+ *
+ * Uses the same Sheet as the marks analysis sample:
+ *   Roll No | Subject 1 | Subject 2 | ...   (marks out of 100, roll numbers only)
+ * The page shows every mark (below the pass mark in pink), each student's total and
+ * percentage, the class average per subject and a search box for a roll number.
+ * It reads the Sheet each time it opens, so a refresh shows the latest marks.
+ *
+ * Use: Extensions &gt; Apps Script, paste this, Save. Then Deploy &gt; New deployment &gt;
+ * Web app. Execute as: Me. Who has access: Only myself, or your school only.
+ * Never "Anyone": this page shows marks.
+ */
+
+var PAGE_PASS_MARK = 35;
+var PAGE_TITLE = 'Class 9A · Unit Test 1 marks';
+
+function doGet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheets().filter(function (s) { return s.getName() !== 'Summary'; })[0];
+  var values = sheet.getDataRange().getValues();
+  var subjects = values[0].slice(1);
+  var students = values.slice(1).filter(function (r) { return r[0] !== ''; });
+
+  var rows = students.map(function (r) {
+    var marks = r.slice(1), total = 0, count = 0;
+    var cells = marks.map(function (m) {
+      if (typeof m !== 'number') return '&lt;td class="ab"&gt;' + esc_(m || '-') + '&lt;/td&gt;';
+      total += m; count++;
+      return '&lt;td' + (m &lt; PAGE_PASS_MARK ? ' class="low"' : '') + '&gt;' + m + '&lt;/td&gt;';
+    }).join('');
+    var pct = count ? Math.round(total / count) + '%' : '-';
+    return '&lt;tr&gt;&lt;th scope="row"&gt;' + esc_(r[0]) + '&lt;/th&gt;' + cells + '&lt;td class="t"&gt;' + total + '&lt;/td&gt;&lt;td class="t"&gt;' + pct + '&lt;/td&gt;&lt;/tr&gt;';
+  }).join('');
+
+  var averages = subjects.map(function (s, k) {
+    var marks = students.map(function (r) { return r[k + 1]; }).filter(function (m) { return typeof m === 'number'; });
+    var sum = marks.reduce(function (a, b) { return a + b; }, 0);
+    return '&lt;td&gt;' + (marks.length ? Math.round(sum / marks.length * 10) / 10 : '-') + '&lt;/td&gt;';
+  }).join('');
+
+  var html =
+    '&lt;style&gt;' +
+    'body{font:16px/1.5 system-ui,sans-serif;margin:0;padding:20px;background:#F5F8FC;color:#16223D}' +
+    'h1{font-size:1.6rem;margin:0 0 4px}p{margin:0 0 14px;color:#4B5A7A}' +
+    'input{font:inherit;padding:8px 12px;border:1px solid #D3DDEB;border-radius:8px;width:220px;margin-bottom:14px}' +
+    '.wrap{overflow-x:auto;background:#fff;border:1px solid #D3DDEB;border-radius:12px}' +
+    'table{border-collapse:collapse;width:100%}th,td{padding:8px 12px;border-bottom:1px solid #E3EAF4;text-align:center}' +
+    'thead th{background:#E3EBFD}tbody th{text-align:left}td.low{background:#FDE2E6;color:#A33A45;font-weight:700}' +
+    'td.ab{color:#8792A8}td.t{font-weight:700}tfoot td,tfoot th{background:#DDF5E6;font-weight:700}' +
+    '&lt;/style&gt;' +
+    '&lt;h1&gt;' + esc_(PAGE_TITLE) + '&lt;/h1&gt;' +
+    '&lt;p&gt;' + students.length + ' students · pink = below ' + PAGE_PASS_MARK + ' · updated ' +
+    Utilities.formatDate(new Date(), ss.getSpreadsheetTimeZone(), 'd MMM yyyy, h:mm a') + '&lt;/p&gt;' +
+    '&lt;input id="q" placeholder="Search roll number" oninput="find(this.value)"&gt;' +
+    '&lt;div class="wrap"&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Roll No&lt;/th&gt;' +
+    subjects.map(function (s) { return '&lt;th&gt;' + esc_(s) + '&lt;/th&gt;'; }).join('') +
+    '&lt;th&gt;Total&lt;/th&gt;&lt;th&gt;%&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;' + rows + '&lt;/tbody&gt;' +
+    '&lt;tfoot&gt;&lt;tr&gt;&lt;th&gt;Class average&lt;/th&gt;' + averages + '&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;&lt;/table&gt;&lt;/div&gt;' +
+    '&lt;script&gt;function find(q){q=q.trim().toUpperCase();document.querySelectorAll("tbody tr").forEach(function(tr){' +
+    'tr.style.display=tr.firstChild.textContent.toUpperCase().indexOf(q)&gt;=0?"":"none";});}&lt;/script&gt;';
+
+  return HtmlService.createHtmlOutput(html)
+    .setTitle(PAGE_TITLE)
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+}
+
+function esc_(v) {
+  return String(v).replace(/&amp;/g, '&amp;amp;').replace(/&lt;/g, '&amp;lt;').replace(/&gt;/g, '&amp;gt;').replace(/"/g, '&amp;quot;');
+}</pre>
+      </div>
+      <ol>
+        <li>Paste the script and click 💾 <b>Save</b>. There's nothing to Run this time.</li>
+        <li>Click the blue <b>Deploy</b> button (top right) → <b>New deployment</b>.</li>
+        <li>Click the ⚙️ gear next to <i>Select type</i> → <b>Web app</b>.</li>
+        <li>Description: <code>Mark list</code>. <b>Execute as:</b> <i>Me</i>. <b>Who has access:</b> <i>Only myself</i> for the demo.</li>
+        <li>Click <b>Deploy</b>, then <b>Authorize access</b> and allow, as in the 6 moves.</li>
+        <li>Copy the <b>Web app URL</b> and open it in a new tab, or on your phone.</li>
+      </ol>
+      <p class="see"><b>You should see:</b> a page titled <i>Class 9A · Unit Test 1 marks</i> with every student's marks, total and percentage, marks below 35 in pink, the class average at the bottom, and a box to search for a roll number. Now change a mark in the Sheet and refresh the page: the new mark is there.</p>
+      <p class="caution"><b>Who has access matters.</b> <i>Only myself</i>: just you. <i>Anyone within [your school]</i>: only people signed in with a school account, which is right for staff. <b>Never choose <i>Anyone</i></b> for marks: anyone with the link could see them, with no sign-in.</p>
+      <p class="tip"><b>Changed the script?</b> The link keeps showing the old version until you click <span class="path">Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy</span>. The link stays the same. Changes to the <b>marks</b> show straight away; only changes to the <b>script</b> need this.</p>
+      <p class="tip"><b>Make it yours:</b> change <code>PAGE_TITLE</code> and <code>PAGE_PASS_MARK</code> at the top of the script. Ask an AI to add more, for example "add a column chart of the class averages at the top of the page".</p>
+    </div>
+  </section>
+
+  <section id="deploy">
+    <span class="eyebrow">Deploy</span>
+    <h2>Share it and make it run by itself</h2>
+    <p class="lede">Sample 4 showed one way to deploy: a web app. Here are three more ways to put a script to work.</p>
+    <div class="card">
+      <h3>1 · A menu in the Sheet</h3>
+      <p>After the first run, reload the Sheet. A new menu (<b>Exams</b>, <b>Certificates</b> or <b>Marks</b>) appears next to <i>Help</i>. From now on, you or a colleague can run the script from the menu without opening the editor.</p>
+    </div>
+    <div class="card">
+      <h3>2 · Give it to every teacher</h3>
+      <ol>
+        <li>Clear the sample rows and leave the headings. Rename the Sheet, for example <i>Marks analysis – make a copy</i>.</li>
+        <li>Click <b>Share</b>, give colleagues <b>Viewer</b> access and send the link.</li>
+        <li>Each teacher opens it and clicks <span class="path">File → Make a copy</span>. <b>The script is copied too.</b></li>
+        <li>They paste their own data, run it from the menu and allow the permissions once.</li>
+      </ol>
+      <p class="tip"><b>Why a copy?</b> Each teacher gets their own Sheet, their own data and their own calendar or folder. Nobody can change your original by mistake.</p>
+    </div>
+    <div class="card">
+      <h3>3 · Make it run on a timer (triggers)</h3>
+      <ol>
+        <li>In the editor, click the ⏰ <b>Triggers</b> icon on the left → <b>Add trigger</b>.</li>
+        <li>Choose the function (for example <code>analyseMarks</code>), event source <b>Time-driven</b>, then <b>Week timer → Every Friday</b>, 4 pm to 5 pm.</li>
+        <li>Save. Every Friday the Summary is rebuilt from that week's marks.</li>
+      </ol>
+      <p class="see"><b>Other triggers:</b> <b>From spreadsheet → On form submit</b> runs a script each time a Google Form linked to the Sheet gets a response, for example to send a thank-you email.</p>
+      <p class="caution"><b>Keep the marks tab first.</b> A timer has no "current tab", so the script uses the first tab. If you add a trigger to the marks sample, keep the marks tab first (drag the Summary tab to the right).</p>
+    </div>
+    <p class="hand">Write once, check once, use all year.</p>
+  </section>
+
+  <section id="help">
+    <span class="eyebrow">Help</span>
+    <h2>If something goes wrong</h2>
+    <div class="faq">
+      <details><summary>"Exceeded maximum execution time"</summary><p>A script can run for up to 6 minutes at a time. These samples don't open pop-ups that wait for you, so this should only happen with very long lists. Split the list into two Sheets, or just run it again: rows already done (Added ✓ or a certificate link) are skipped.</p></details>
+      <details><summary>Nothing seems to happen</summary><p>Look at the Sheet tab, not the editor: the messages appear at the bottom right of the Sheet. In the editor, the Execution log shows "Execution completed" when it's done.</p></details>
+      <details><summary>The data went into one cell instead of columns</summary><p>Use the <b>Copy data</b> button and paste with Ctrl+V into cell A1. If it still lands in column A, choose <span class="path">Data → Split text to columns</span> and pick <i>Tab</i> as the separator.</p></details>
+      <details><summary>"Row 3: the time … is not like 09:30"</summary><p>In the exam sample, type times as 09:30 or 2:00 PM and dates as 2026-11-16 or 16/11/2026. Fix that cell and run again.</p></details>
+      <details><summary>"This app is blocked" or Apps Script won't open</summary><p>On a school (Workspace) account, the admin may have switched Apps Script off or blocked unverified scripts. Ask your admin, or practise with a personal account and sample data only.</p></details>
+      <details><summary>Can I ask an AI to change a script?</summary><p>Yes. Paste the script into Gemini, ChatGPT or Claude and describe the change, for example "also email the Summary to me every Friday". Then test the new version on a copy of the Sheet with sample data before you use it for real.</p></details>
+    </div>
+  </section>
+
+  <footer>Sri Ramachandra Faculty of Engineering and Technology · AI for Teachers workshop · Side topic: Explore Apps Script. All names and marks on this page are made up.</footer>
+</div>
+
+<script>
+(function(){
+  var TKEY='nblm-lab-theme';
+  try{var t=localStorage.getItem(TKEY); if(t)document.documentElement.setAttribute('data-theme',JSON.parse(t));}catch(e){}
+  document.getElementById('themeBtn').addEventListener('click',function(){
+    var cur=document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    var next=cur==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',next);
+    try{localStorage.setItem(TKEY,JSON.stringify(next))}catch(e){}
+  });
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var el=document.getElementById(btn.dataset.target), text=el.textContent;
+      function ok(){var o=btn.textContent;btn.textContent='Copied';btn.classList.add('ok');setTimeout(function(){btn.textContent=o;btn.classList.remove('ok')},1600);}
+      function fallback(){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent='Press Ctrl+C';}
+      try{navigator.clipboard.writeText(text).then(ok,fallback)}catch(e){fallback()}
+    });
+  });
+})();
+</script>
+</body>
+</html>

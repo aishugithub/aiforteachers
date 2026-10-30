@@ -655,13 +655,39 @@ table.cmp th,table.cmp td{padding:8px 14px;font-size:18px;line-height:1.35}
   <span class="kicker">Explore Apps Script · Live demo</span>
   <h2>Run your first script in 4 minutes</h2>
   <div class="seq" style="grid-template-columns:repeat(4,1fr)">
-    <div class="card"><h3>Open</h3><p>Go to <b>sheets.new</b> and paste the quiz table from the guide.</p></div>
+    <div class="card"><h3>Open</h3><p>Go to <b>sheets.new</b>, paste the quiz table from the guide and name the Sheet.</p></div>
     <div class="card"><h3>Paste</h3><p><b>Extensions → Apps Script</b>. Replace the code with the guide's script. Save.</p></div>
     <div class="card"><h3>Run</h3><p>Choose <b>createQuizForm</b> and click <b>Run</b>. Allow the permissions.</p></div>
     <div class="card"><h3>Use</h3><p>Open the new Form. Answer it once and see your score land in the Sheet.</p></div>
   </div>
   <div class="card" style="border-color:var(--green)"><p style="font-size:19px"><b>The permission screen:</b> "Google hasn't verified this app" appears for every script you make yourself. Click <b>Advanced → Go to (your project)</b>, then <b>Allow</b>. It's safe here because it's your script and you know what it does.</p></div>
   <aside class="notes">Use step 16 of the hands-on guide; it has the prompt, the sample table and the full script with a Copy button. The permission screen is the moment most people stop, so walk through it on the projector. On school accounts the screen may look different, or the admin may have blocked Apps Script; ask your admin.</aside>
+</section>
+
+<section class="slide side">
+  <span class="kicker">Explore Apps Script · Four school jobs</span>
+  <h2>Sample data, script and steps: <mark>ready to run</mark></h2>
+  <div class="g4 tight">
+    <div class="card"><span class="chip g">Exam cell</span><h3>Exam timetable → Calendar</h3><p>Five exams in a Sheet become events in a "Term 1 Exams" calendar, each with a reminder the day before.</p><p style="font-size:16px"><b>Run:</b> addExamsToCalendar</p></div>
+    <div class="card"><span class="chip g">Events</span><h3>Certificates in one click</h3><p>A list of quiz winners becomes one PDF certificate per student in a Drive folder, from an editable Doc template.</p><p style="font-size:16px"><b>Run:</b> makeCertificates</p></div>
+    <div class="card"><span class="chip g">Class teacher</span><h3>Unit-test marks analysis</h3><p>Average, pass % and below-35 list per subject, a remedial group, a chart, and failing marks in pink.</p><p style="font-size:16px"><b>Run:</b> analyseMarks</p></div>
+    <div class="card" style="border-color:var(--green)"><span class="chip g">HOD · PTM</span><h3>Mark list as a web page</h3><p>The same Sheet published as a web app: one link, always the latest marks, search by roll number.</p><p style="font-size:16px"><b>Deploy:</b> Web app</p></div>
+  </div>
+  <p class="body">Open the <b>Apps Script Lab</b>: <a class="jump" href="apps-script-lab.html">aishugithub.github.io/aiforteachers/notebooklm-workshop/apps-script-lab.html</a></p>
+    <aside class="notes">Demo order that works well: marks analysis first (no calendar or Drive changes, most visual, about 2 minutes), then the web page from the same Sheet (Deploy → New deployment → Web app, access Only myself; open the link on your phone, change a mark in the Sheet, refresh), then certificates (open the Drive folder and a PDF), then the exam calendar (open Calendar to 16 November 2026). Stress: never set a marks page to "Anyone". Everything is on the Apps Script Lab page with Copy buttons. Before the session, run each one once on your own account so the permission screens are done, and remove the Term 1 Exams calendar afterwards.</aside>
+</section>
+
+<section class="slide side">
+  <span class="kicker">Explore Apps Script · Deploy</span>
+  <h2>From one teacher's script to the whole staff room</h2>
+  <div class="g4 tight">
+    <div class="card"><h3>1 · A web app</h3><p><b>Deploy → New deployment → Web app.</b> A link anyone you allow can open, such as the mark list. Access: only you or your school.</p></div>
+    <div class="card"><h3>2 · A menu</h3><p>After the first run, reload the Sheet. A new menu (<b>Marks</b>, <b>Exams</b>, <b>Certificates</b>) runs it in one click, with no editor needed.</p></div>
+    <div class="card"><h3>3 · Make a copy</h3><p>Share the Sheet as <b>Viewer</b>. Colleagues click <b>File → Make a copy</b>, and the script comes with it. Each teacher has their own data.</p></div>
+    <div class="card"><h3>4 · A trigger</h3><p>⏰ <b>Triggers → Add trigger</b>: run <b>analyseMarks</b> every Friday at 4 pm, or a script on every Form response.</p></div>
+  </div>
+  <p class="hand">Write once, check once, use all year.</p>
+  <aside class="notes">For teachers, "deploying" a script means these three things. Show the menu live after the first run (reload the Sheet). Make a copy is the easiest way to give a tool to every class teacher: it copies the script too, and each copy runs in that teacher's own account. Triggers make it run without anyone clicking.</aside>
 </section>
 
 <section class="slide side">
@@ -673,7 +699,7 @@ table.cmp th,table.cmp td{padding:8px 14px;font-size:18px;line-height:1.35}
     <div class="card"><h3>Student data rules still apply</h3><p>Roll numbers, not names. Use the school account for anything about students.</p></div>
     <div class="card"><h3>Know the limits</h3><p>Daily limits on emails and runs (lower on personal accounts). Your admin may switch Apps Script off.</p></div>
   </div>
-  <p class="body">Start here: <b>developers.google.com/apps-script</b> · then pick one job from your week and ask an AI to script it.</p>
+  <p class="body">Start with the <a class="jump" href="apps-script-lab.html">Apps Script Lab</a> · then pick one job from your week and ask an AI to script it.</p>
   <p class="hand">Script one boring job this week.</p>
   <aside class="notes">Wrap up the side topic. The homework: pick one repetitive job from this week and ask an AI to write the script. Test it on a copy. If it saves you ten minutes a week, that's six hours a year.</aside>
 </section>
