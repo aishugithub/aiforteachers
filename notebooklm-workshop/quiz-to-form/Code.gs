@@ -7,8 +7,9 @@
  * Marks and Explanation are optional (Marks defaults to 1).
  * A table pasted as text into column A (with | between cells) also works.
  *
- * Use: Extensions > Apps Script, paste this, Save, then Run "createQuizForm".
- * After the first run there is also a "Quiz" menu in the Sheet.
+ * Use: name the Sheet (that becomes the quiz title), then Extensions > Apps Script,
+ * paste this, Save, and Run "createQuizForm". The links appear in the Execution log
+ * and in a note on cell A1. After the first run there is also a "Quiz" menu.
  */
 
 function onOpen() {
@@ -19,13 +20,12 @@ function onOpen() {
 
 function createQuizForm() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var ui = SpreadsheetApp.getUi();
   var rows = readQuizRows_(ss.getActiveSheet().getDataRange().getDisplayValues());
 
-  var answer = ui.prompt('Quiz title', 'For example: Class 12 Physics - Electromagnetic Induction - Quiz 1',
-    ui.ButtonSet.OK_CANCEL);
-  if (answer.getSelectedButton() !== ui.Button.OK) return;
-  var title = answer.getResponseText().trim() || ss.getName();
+  // The quiz is named after the Sheet. No pop-up: a dialog opens in the Sheet tab, and a
+  // run started from the editor would wait there unseen until it times out.
+  var title = ss.getName();
+  ss.toast('Creating ' + rows.length + ' questions...', 'Quiz', 30);
 
   var form = FormApp.create(title);
   form.setIsQuiz(true);
@@ -48,9 +48,13 @@ function createQuizForm() {
   // Responses (with scores) land in a new tab of this Sheet.
   form.setDestination(FormApp.DestinationType.SPREADSHEET, ss.getId());
 
-  ui.alert('Quiz created: ' + rows.length + ' questions',
-    'Check it, then send students this link:\n' + form.getPublishedUrl() +
-    '\n\nEdit the form here:\n' + form.getEditUrl(), ui.ButtonSet.OK);
+  // Links go to the Execution log (below the code) and to a note on cell A1.
+  var links = 'Quiz created: ' + rows.length + ' questions\n' +
+    'Student link: ' + form.getPublishedUrl() + '\n' +
+    'Edit link: ' + form.getEditUrl();
+  Logger.log(links);
+  ss.getActiveSheet().getRange('A1').setNote(links);
+  ss.toast('Done. The links are in the note on cell A1.', 'Quiz', 10);
 }
 
 /** Turn sheet values into [{question, options, correct, marks, explanation}]. Throws on bad rows. */

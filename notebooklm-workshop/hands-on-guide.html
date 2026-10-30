@@ -352,9 +352,10 @@ footer{margin-top:56px;padding-top:20px;border-top:2px solid var(--rule);color:v
         <ul>
           <li><b>Check the table first</b>: every question, every option and especially the Correct column. This is your verification step.</li>
           <li>Open a new Google Sheet (<span class="path">sheets.new</span>), click cell A1 and paste the table.</li>
+          <li>Rename the Sheet (click <i>Untitled spreadsheet</i> at the top), for example <code>Class 7 Science – Water Cycle – Quiz 1</code>. This name becomes the quiz title.</li>
           <li>In the Sheet, go to <span class="path">Extensions → Apps Script</span>. Delete what's there, paste the script below, click 💾 <b>Save</b>, then <b>Run</b>.</li>
           <li>The first time, Google asks for permission: choose your account, then <b>Advanced → Go to project (unsafe) → Allow</b>. This is your own script, so it's safe to allow. It only creates the Form and adds the responses tab.</li>
-          <li>Back in the Sheet, type a title. A box shows the <b>student link</b> and the <b>edit link</b>.</li>
+          <li>Wait for <i>Execution completed</i> in the <b>Execution log</b> below the code (about 1–2 seconds per question). The <b>student link</b> and the <b>edit link</b> appear there, and also in a note on cell A1 of the Sheet.</li>
           <li>Open the edit link and check the Form once, then share the student link or attach the Form to a Google Classroom assignment.</li>
         </ul>
         <p class="see"><b>You should see:</b> a Google Form already set up as a quiz, with a Roll number box, every question, the correct answers and marks, and the explanation shown to students who get it wrong. Scores appear in a new <b>Form Responses</b> tab in your Sheet and under <b>Responses</b> in the Form.</p>
@@ -370,8 +371,9 @@ footer{margin-top:56px;padding-top:20px;border-top:2px solid var(--rule);color:v
  * Marks and Explanation are optional (Marks defaults to 1).
  * A table pasted as text into column A (with | between cells) also works.
  *
- * Use: Extensions &gt; Apps Script, paste this, Save, then Run "createQuizForm".
- * After the first run there is also a "Quiz" menu in the Sheet.
+ * Use: name the Sheet (that becomes the quiz title), then Extensions &gt; Apps Script,
+ * paste this, Save, and Run "createQuizForm". The links appear in the Execution log
+ * and in a note on cell A1. After the first run there is also a "Quiz" menu.
  */
 
 function onOpen() {
@@ -382,13 +384,12 @@ function onOpen() {
 
 function createQuizForm() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var ui = SpreadsheetApp.getUi();
   var rows = readQuizRows_(ss.getActiveSheet().getDataRange().getDisplayValues());
 
-  var answer = ui.prompt('Quiz title', 'For example: Class 12 Physics - Electromagnetic Induction - Quiz 1',
-    ui.ButtonSet.OK_CANCEL);
-  if (answer.getSelectedButton() !== ui.Button.OK) return;
-  var title = answer.getResponseText().trim() || ss.getName();
+  // The quiz is named after the Sheet. No pop-up: a dialog opens in the Sheet tab, and a
+  // run started from the editor would wait there unseen until it times out.
+  var title = ss.getName();
+  ss.toast('Creating ' + rows.length + ' questions...', 'Quiz', 30);
 
   var form = FormApp.create(title);
   form.setIsQuiz(true);
@@ -411,9 +412,13 @@ function createQuizForm() {
   // Responses (with scores) land in a new tab of this Sheet.
   form.setDestination(FormApp.DestinationType.SPREADSHEET, ss.getId());
 
-  ui.alert('Quiz created: ' + rows.length + ' questions',
-    'Check it, then send students this link:\n' + form.getPublishedUrl() +
-    '\n\nEdit the form here:\n' + form.getEditUrl(), ui.ButtonSet.OK);
+  // Links go to the Execution log (below the code) and to a note on cell A1.
+  var links = 'Quiz created: ' + rows.length + ' questions\n' +
+    'Student link: ' + form.getPublishedUrl() + '\n' +
+    'Edit link: ' + form.getEditUrl();
+  Logger.log(links);
+  ss.getActiveSheet().getRange('A1').setNote(links);
+  ss.toast('Done. The links are in the note on cell A1.', 'Quiz', 10);
 }
 
 /** Turn sheet values into [{question, options, correct, marks, explanation}]. Throws on bad rows. */
@@ -476,6 +481,7 @@ function isDividerRow_(r) {
         </div>
         <p class="tip"><b>Next time:</b> paste a new table into a new Sheet. After the first run, the Sheet also has a <b>Quiz → Create Google Form quiz</b> menu. The Form collects students' email addresses, so they need to sign in with a Google account; to switch that off, use the Form's Settings → Responses.</p>
         <p class="caution"><b>If you see "Row 5: the correct answer … is not one of the options":</b> that row's Correct column doesn't match an option. Fix that cell and run again. Nothing is created until every row is right.</p>
+        <p class="caution"><b>If you see "Exceeded maximum execution time":</b> copy the script again from this page. An older version asked for the title in a pop-up that opened in the Sheet tab and waited there unseen. Also check Google Drive for a half-made Form from that run and delete it. Very long quizzes (over 100 questions) may still hit Google's 6-minute limit, so split them into two Sheets.</p>
       </li>
     </ol>
   </section>
