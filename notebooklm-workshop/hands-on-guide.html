@@ -108,6 +108,8 @@ ol.steps{list-style:none;margin:0;padding:0;display:grid;gap:14px;counter-reset:
 .challenges{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
 .ch{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:8px;align-content:start}
 .ch .lvl{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green)}
+.nb-link{margin-top:4px}
+.nb-link a{display:inline-block;font-weight:700;text-decoration:none;background:var(--blue);color:var(--sheet);border-radius:8px;padding:6px 14px}
 
 /* tables & faq */
 .tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--sheet)}
@@ -146,7 +148,7 @@ footer{margin-top:56px;padding-top:20px;border-top:2px solid var(--rule);color:v
       <span><b>Website:</b> <a href="https://notebooklm.google.com" target="_blank" rel="noopener">notebooklm.google.com</a></span>
     </div>
     <nav class="toc" aria-label="Sections">
-      <a href="#map">Screen map</a><a href="#lab">Guided steps</a><a href="#sample">Sample source</a><a href="#prompts">Prompt library</a><a href="#practice">Practice challenges</a><a href="#admin">Admin tasks</a><a href="#which">Which tool?</a><a href="#safe">Safe use</a><a href="#help">Help &amp; FAQ</a>
+      <a href="#map">Screen map</a><a href="#lab">Guided steps</a><a href="#demos">Demo notebooks</a><a href="#sample">Sample source</a><a href="#prompts">Prompt library</a><a href="#practice">Practice challenges</a><a href="#admin">Admin tasks</a><a href="#which">Which tool?</a><a href="#safe">Safe use</a><a href="#help">Help &amp; FAQ</a>
     </nav>
   </header>
 
@@ -287,6 +289,7 @@ footer{margin-top:56px;padding-top:20px;border-top:2px solid var(--rule);color:v
           <li>While it plays, try <b>Interactive mode (Join)</b>: interrupt the two hosts and ask them a question with your microphone.</li>
         </ul>
         <div class="prompt">The listeners are Class 7 students in Chennai. Explain in simple words, use one everyday example from Chennai weather, and end with three questions for the students to think about.<button class="copy" type="button">Copy</button></div>
+        <p class="tip"><b>See the prompt behind any Studio item:</b> in the Studio list, click the <b>⋮</b> next to an audio, video, quiz, flashcards or report you customised, then <b>View custom prompt</b>. It shows the exact instructions used, so you can reuse a prompt that worked. It appears only for items made with your own instructions, and the prompt can't be edited after generating: to change it, make a new one.</p>
       </li>
 
       <li class="step" data-id="s12">
@@ -484,6 +487,30 @@ function isDividerRow_(r) {
         <p class="caution"><b>If you see "Exceeded maximum execution time":</b> copy the script again from this page. An older version asked for the title in a pop-up that opened in the Sheet tab and waited there unseen. Also check Google Drive for a half-made Form from that run and delete it. Very long quizzes (over 100 questions) may still hit Google's 6-minute limit, so split them into two Sheets.</p>
       </li>
     </ol>
+  </section>
+
+  <section id="demos">
+    <span class="eyebrow">Open the real thing</span>
+    <h2>Explore the two demo notebooks</h2>
+    <p class="lede">These are the notebooks from today's demo, shared as view-only. Open each one and look at how the sources were chosen, ask the chat your own questions, and open every Studio item to see what it made and the prompt behind it.</p>
+    <div class="challenges">
+      <div class="ch">
+        <span class="lvl">Teaching · Class 12 Physics</span>
+        <h3>Electromagnetic Induction</h3>
+        <p>NCERT chapter 6 as a PDF and as a link, the teacher's own notes, a YouTube video and two web articles. Studio has a mind map, a quiz whose wrong options are real student misconceptions, formula flashcards, an infographic, an audio overview for Chennai students and more.</p>
+        <p><b>Try:</b> ask <i>Why does a magnet fall slowly through a copper pipe?</i>, click the citations, then find the spelling mistake in the infographic's title.</p>
+        <p class="nb-link"><a href="https://notebook.google.com/notebook/4e576881-c5e2-41b9-9868-75963b372af6" target="_blank" rel="noopener">Open the Physics notebook →</a></p>
+      </div>
+      <div class="ch">
+        <span class="lvl">Admin · Class teacher 12B</span>
+        <h3>School Admin (Demo)</h3>
+        <p>One week of a class teacher's paperwork for a made-up school, as nine sources: two circulars, the staff handbook, an invigilation roster, staff-meeting minutes that change some dates, class records (roll numbers only), parent messages, a draft question paper and last year's Annual Day invitation.</p>
+        <p><b>Try:</b> ask <i>When is the PTM?</i> The circular gives one date, but the meeting minutes changed it. See whether the notebook catches that.</p>
+        <p class="nb-link"><a href="https://notebook.google.com/notebook/f861eca5-2c93-496b-a634-acfbdeaecf10" target="_blank" rel="noopener">Open the Admin notebook →</a></p>
+      </div>
+    </div>
+    <p class="tip"><b>See the prompt behind each Studio item:</b> click the <b>⋮</b> next to it → <b>View custom prompt</b>. Copy the ones you like into your own notebooks.</p>
+    <p class="caution"><b>View only:</b> you can read, chat and open Studio items, but you can't change these notebooks. To build on one, start your own notebook and add the same kind of sources.</p>
   </section>
 
   <section id="sample">

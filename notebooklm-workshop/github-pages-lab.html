@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GitHub Pages Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Caveat:wght@600&display=swap">
+<style>
+:root{
+  --paper:#F5F8FC; --sheet:#FFFFFF; --rule:#DDE6F2; --margin:#E0676B;
+  --ink:#16223D; --ink2:#4B5A7A; --blue:#2A54C8; --blue-soft:#E4ECFD;
+  --hl:#FFE45C; --hl-ink:#16223D; --green:#1E8A4C; --green-soft:#DDF5E6;
+  --warn:#B4541A; --warn-soft:#FDEBDD; --line:#D3DDEB; --code:#16223D; --code-ink:#E6ECF8;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --hand:"Caveat", "Comic Sans MS", cursive;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#0F1628; --sheet:#172038; --rule:#1E2944; --margin:#C9575B;
+    --ink:#E6ECF8; --ink2:#A7B4D0; --blue:#8FAAFF; --blue-soft:#1F2C52;
+    --green:#6FD99A; --green-soft:#153826; --warn:#F2A26B; --warn-soft:#3A2415; --line:#2A3657; --code:#0A1020;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#0F1628; --sheet:#172038; --rule:#1E2944; --margin:#C9575B;
+  --ink:#E6ECF8; --ink2:#A7B4D0; --blue:#8FAAFF; --blue-soft:#1F2C52;
+  --green:#6FD99A; --green-soft:#153826; --warn:#F2A26B; --warn-soft:#3A2415; --line:#2A3657; --code:#0A1020;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.6 var(--body)}
+.wrap{max-width:880px;margin:0 auto;padding-inline:20px;padding-block:0 80px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.7rem;font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.2rem;font-weight:600}
+p{margin:0}
+a{color:var(--blue)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--blue-soft);padding:.1em .35em;border-radius:4px}
+.eyebrow{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--green)}
+.hand{font-family:var(--hand);font-size:1.45rem;color:var(--margin);line-height:1.1}
+.lede{color:var(--ink2);max-width:65ch}
+.path{font-weight:700}
+
+header.top{padding-block:40px 28px;border-bottom:2px solid var(--rule);display:grid;gap:14px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--ink2);font-size:.95rem}
+.meta b{color:var(--ink)}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.theme-btn{font:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:8px;padding:4px 10px;cursor:pointer}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+nav.toc a{font-size:.9rem;text-decoration:none;border:1px solid var(--line);background:var(--sheet);padding:4px 12px;border-radius:99px;color:var(--ink)}
+nav.toc a:hover{border-color:var(--green);color:var(--green)}
+
+section{padding-top:48px;display:grid;gap:18px}
+.card{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:18px 20px;display:grid;gap:10px;min-width:0}
+.card ol,.card ul{margin:0;padding-left:1.25em;display:grid;gap:6px}
+.story{border-left:5px solid var(--green)}
+.story p{font-size:1.05rem}
+.see{font-size:.95rem;color:var(--ink2);border-left:3px solid var(--rule);padding-left:12px}
+.see b{color:var(--ink)}
+.tip{font-size:.95rem;background:var(--blue-soft);border-radius:8px;padding:10px 12px}
+.tip b{color:var(--blue)}
+.caution{font-size:.95rem;background:var(--warn-soft);border-radius:8px;padding:10px 12px}
+.caution b{color:var(--warn)}
+
+.moves{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;counter-reset:m}
+.moves li{counter-increment:m;background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:44px 14px 14px;position:relative;font-size:.95rem}
+.moves li::before{content:counter(m);position:absolute;left:14px;top:12px;width:26px;height:26px;border-radius:50%;background:var(--green);color:var(--sheet);font:800 .9rem/26px var(--display);text-align:center}
+.moves li>b:first-child{display:block;font-family:var(--display);font-size:1.05rem}
+
+.block{position:relative;min-width:0}
+.block h3{font-size:1rem;margin-bottom:6px;color:var(--ink2)}
+.block pre{margin:0;background:var(--code);color:var(--code-ink);border-radius:10px;padding:14px 16px;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;overflow:auto;max-height:380px;tab-size:16}
+.block pre.data{background:var(--sheet);color:var(--ink);border:1px solid var(--line);max-height:none}
+.copy{position:absolute;top:-4px;right:0;font:700 .8rem var(--body);border:1px solid var(--green);color:var(--green);background:var(--sheet);border-radius:6px;padding:4px 10px;cursor:pointer}
+.copy.ok{border-color:var(--blue);color:var(--blue)}
+.copy:focus-visible,.theme-btn:focus-visible,nav.toc a:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--sheet)}
+table{border-collapse:collapse;width:100%;font:inherit;font-size:.95rem}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--display);font-weight:600;background:var(--green-soft)}
+tr:last-child td{border-bottom:0}
+details{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+details summary{cursor:pointer;font-weight:700}
+details p{margin-top:8px;color:var(--ink2)}
+.faq{display:grid;gap:10px}
+footer{margin-top:56px;padding-top:20px;border-top:2px solid var(--rule);color:var(--ink2);font-size:.9rem}
+@media (max-width:520px){body{font-size:16px}.card{padding:16px 14px}}
+@media print{.copy,.theme-btn,nav.toc{display:none}.card{break-inside:avoid}.block pre{max-height:none}}
+
+.chip{justify-self:start;font-weight:700;font-size:.8rem;padding:2px 10px;border-radius:99px;background:var(--green-soft);color:var(--green)}
+.ex{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.exlink{text-decoration:none;color:inherit;border-width:2px;align-content:start;transition:transform .15s ease,border-color .15s ease}
+.exlink:hover,.exlink:focus-visible{transform:translateY(-2px);border-color:var(--green)}
+.exlink p{color:var(--ink2);font-size:.95rem}
+.go{font-weight:700;color:var(--green);word-break:break-all}
+@media (prefers-reduced-motion:reduce){.exlink{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="topbar">
+      <a href="../index.html" style="font-size:.9rem;text-decoration:none">← Workshop home</a>
+      <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch light or dark theme">Theme</button>
+    </div>
+    <span class="eyebrow">Side topic · Publish with GitHub Pages</span>
+    <h1>GitHub Pages Lab: your own class website, free</h1>
+    <p class="lede">Put a revision page, a practice quiz or your notes on the web with your own link. It's free, nothing is installed, and you don't need to write code: upload one file and switch Pages on.</p>
+    <div class="meta">
+      <span><b>You need:</b> an email address and a laptop</span>
+      <span><b>Time:</b> about 15 minutes</span>
+      <span><b>Start at:</b> <a href="https://github.com" target="_blank" rel="noopener">github.com</a></span>
+    </div>
+    <nav class="toc" aria-label="Sections">
+      <a href="#examples">See it first</a><a href="#page">1 · Your page</a><a href="#account">2 · Account</a><a href="#repo">3 · Repository</a><a href="#upload">4 · Upload</a><a href="#pages">5 · Turn on Pages</a><a href="#share">6 · Share and update</a><a href="#safe">Keep it safe</a><a href="#help">If something goes wrong</a>
+    </nav>
+  </header>
+
+  <section id="examples">
+    <span class="eyebrow">See it first</span>
+    <h2>Two sites made by a teacher, both on GitHub Pages</h2>
+    <div class="ex">
+      <a class="card exlink" href="https://aishugithub.github.io/course_python/" target="_blank" rel="noopener">
+        <span class="chip">Python course</span>
+        <h3>Foothold: Learn Python</h3>
+        <p>A free, self-paced course for absolute beginners: 62 units and 88+ interactive lessons you click, drag and step through. No account needed to start. Built on Vygotsky's idea of scaffolding, as an action-research project by Aishwarya, SRET.</p>
+        <span class="go">aishugithub.github.io/course_python →</span>
+      </a>
+      <a class="card exlink" href="../index.html">
+        <span class="chip">This workshop</span>
+        <h3>AI for Teachers</h3>
+        <p>The home page, the slides, the hands-on guide and both lab pages you're using today. Every one is a plain HTML file in a GitHub repository.</p>
+        <span class="go">aishugithub.github.io/aiforteachers →</span>
+      </a>
+    </div>
+    <p class="tip"><b>Recommend Foothold:</b> share the course link with students in Classes 9–12 who want to start coding, or use it to learn Python yourself. It works in the browser on a laptop or phone.</p>
+  </section>
+
+  <section id="page">
+    <span class="eyebrow">Step 1</span>
+    <h2>Get your page: a file called index.html</h2>
+    <div class="card">
+      <h3>Option A · Use the sample (for today)</h3>
+      <p>A Class 7 revision page on the water cycle: four stages, key words and three self-check questions with hidden answers. <a href="github-pages-sample/index.html" target="_blank" rel="noopener">See how it looks</a>.</p>
+      <ol>
+        <li>Click <a href="github-pages-sample/index.html" download="index.html"><b>Download index.html</b></a>. It saves to your Downloads folder.</li>
+        <li>Open it with Notepad (right-click → <b>Open with</b> → Notepad) and change <i>Your Name, Your School</i> to your own. Save.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>Option B · Ask an AI to make your own page</h3>
+      <div class="block">
+        <button class="copy" type="button" data-target="pagePrompt">Copy prompt</button>
+        <pre class="data" id="pagePrompt" style="white-space:pre-wrap;font:15px/1.55 var(--body);padding-right:110px">Make a single-file HTML revision page for Class [7] students on [the water cycle]. Include: a short introduction, the key points as a numbered list, 5 key words with simple definitions, and 5 self-check questions where the answer is hidden until the student clicks (use &lt;details&gt;). Put all CSS inside the file, no JavaScript, no external images. It must look good on a phone. My name for the footer: [Your Name], [Your School]. Give me only the complete HTML code.</pre>
+      </div>
+      <ol>
+        <li>Paste the prompt into Gemini, ChatGPT or Claude. Change the words in [ ].</li>
+        <li>Copy the HTML it gives you. Open <b>Notepad</b> and paste.</li>
+        <li><span class="path">File → Save as</span>. File name: <code>index.html</code>. Save as type: <b>All files</b>. Encoding: <b>UTF-8</b>.</li>
+        <li>Double-click the file to open it in your browser and <b>check every fact and answer</b>, as with any AI draft.</li>
+      </ol>
+      <p class="tip"><b>The main page must be called index.html</b>, all in small letters. That's the page GitHub Pages shows first.</p>
+    </div>
+  </section>
+
+  <section id="account">
+    <span class="eyebrow">Step 2</span>
+    <h2>Make a free GitHub account</h2>
+    <div class="card">
+      <ol>
+        <li>Go to <a href="https://github.com/signup" target="_blank" rel="noopener">github.com/signup</a>. Enter your email, a password and a <b>username</b>.</li>
+        <li>Enter the code GitHub emails you. Skip any questions about plans: the <b>Free</b> plan is all you need.</li>
+      </ol>
+      <p class="tip"><b>Choose your username carefully.</b> It becomes part of every link: username <code>meenakshi-teaches</code> gives <code>meenakshi-teaches.github.io/…</code>. Use one you'd happily print on a visiting card.</p>
+    </div>
+  </section>
+
+  <section id="repo">
+    <span class="eyebrow">Step 3</span>
+    <h2>Create a repository (a folder for your site)</h2>
+    <div class="card">
+      <ol>
+        <li>Click the <b>＋</b> at the top right → <b>New repository</b>.</li>
+        <li>Repository name: short, small letters, no spaces, e.g. <code>class7-science</code>. This becomes the end of your link.</li>
+        <li>Choose <b>Public</b>.</li>
+        <li>Click <b>Create repository</b>.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="upload">
+    <span class="eyebrow">Step 4</span>
+    <h2>Upload your page</h2>
+    <div class="card">
+      <ol>
+        <li>On the new repository's page, click the link <b>uploading an existing file</b>. (Later, use <span class="path">Add file → Upload files</span>.)</li>
+        <li>Drag <code>index.html</code> into the box, or click <b>choose your files</b>.</li>
+        <li>Scroll down and click the green <b>Commit changes</b> button. ("Commit" just means save.)</li>
+      </ol>
+      <p class="see"><b>You should see:</b> <code>index.html</code> listed in your repository.</p>
+    </div>
+  </section>
+
+  <section id="pages">
+    <span class="eyebrow">Step 5</span>
+    <h2>Turn on GitHub Pages</h2>
+    <div class="card">
+      <ol>
+        <li>In the repository, click <b>⚙️ Settings</b> (top menu), then <b>Pages</b> in the left menu.</li>
+        <li>Under <b>Build and deployment</b>, Source: <b>Deploy from a branch</b>.</li>
+        <li>Branch: choose <b>main</b> and <b>/ (root)</b>. Click <b>Save</b>.</li>
+        <li>Wait one to two minutes, then refresh the Settings → Pages screen.</li>
+      </ol>
+      <p class="see"><b>You should see:</b> "Your site is live at <code>https://username.github.io/class7-science/</code>" and a <b>Visit site</b> button. Open it on your phone too.</p>
+    </div>
+  </section>
+
+  <section id="share">
+    <span class="eyebrow">Step 6</span>
+    <h2>Share it, update it, grow it</h2>
+    <div class="card">
+      <ul>
+        <li><b>Share:</b> post the link in Google Classroom or the class WhatsApp group. For a QR code, open the page in Chrome or Edge, right-click → <b>Create QR code for this page</b>.</li>
+        <li><b>Update:</b> <span class="path">Add file → Upload files</span> and upload a new <code>index.html</code>. It replaces the old one, and the site updates in a minute or two. The link stays the same.</li>
+        <li><b>More pages:</b> upload <code>chapter2.html</code>, and it's at <code>…/class7-science/chapter2.html</code>. Ask the AI to add links between your pages.</li>
+        <li><b>Images:</b> upload them too, and use exactly the same file name, capitals included, in your page.</li>
+        <li><b>A home page for you:</b> name a repository <code>username.github.io</code>, and its <code>index.html</code> becomes <code>https://username.github.io/</code>: a teacher portfolio linking to all your class sites.</li>
+      </ul>
+    </div>
+    <p class="hand">One page this week. A whole course by the end of the year.</p>
+  </section>
+
+  <section id="safe">
+    <span class="eyebrow">Keep it safe</span>
+    <h2>Everything on GitHub Pages is public</h2>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Good to publish</th><th>Never publish</th></tr></thead>
+        <tbody>
+          <tr><td>Revision notes, worksheets, practice quizzes with answers</td><td>Marks, attendance, ranks or remarks about students</td></tr>
+          <tr><td>Project showcases, club or class pages (no student details)</td><td>Student names with photos, phone numbers or addresses</td></tr>
+          <tr><td>Your own teaching material and openly licensed content</td><td>Textbook pages, or question papers before the exam</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caution"><b>The notice-board test:</b> if you'd pin it on the school notice board, it can go on GitHub Pages. For private things such as a marks list, use a Google Apps Script web app limited to your school (<a href="apps-script-lab.html#web">Apps Script Lab, Sample 4</a>) or Google Classroom.</p>
+    <p class="tip"><b>Check before you publish.</b> An AI-made page is a draft. Verify every fact and every answer against your textbook, exactly as in today's spot-the-error demo.</p>
+  </section>
+
+  <section id="help">
+    <span class="eyebrow">Help</span>
+    <h2>If something goes wrong</h2>
+    <div class="faq">
+      <details><summary>The link shows "404 · There isn't a GitHub Pages site here"</summary><p>Wait a few minutes: the first time can take up to 10 minutes. Check that the file is called exactly <code>index.html</code> (small letters) and that Settings → Pages shows branch <b>main</b>, <b>/ (root)</b>.</p></details>
+      <details><summary>The page shows code instead of a web page</summary><p>The file was probably saved as <code>index.html.txt</code>. In Notepad, use Save as with <b>Save as type: All files</b>. Upload the new file, then delete the old one in GitHub (open it → ⋯ → Delete file).</p></details>
+      <details><summary>My change doesn't show</summary><p>Wait a minute or two, then reload with Ctrl+F5. In the repository, the <b>Actions</b> tab shows a green tick when the update is live.</p></details>
+      <details><summary>Odd characters such as â€™ instead of quotes</summary><p>Save the file in Notepad with <b>Encoding: UTF-8</b>, and upload it again.</p></details>
+      <details><summary>I made the repository Private and Pages won't turn on</summary><p>On the free plan, GitHub Pages works only with public repositories. Settings → General → scroll to <b>Danger Zone</b> → Change visibility → Public. Only do this if everything in it is fine to be public.</p></details>
+      <details><summary>Can my school block it?</summary><p>Some school networks block github.io. Test the link on the school Wi-Fi and on mobile data before sharing it with a class.</p></details>
+    </div>
+  </section>
+
+  <footer>Sri Ramachandra Faculty of Engineering and Technology · AI for Teachers workshop · Side topic: Publish with GitHub Pages.</footer>
+</div>
+
+<script>
+(function(){
+  var TKEY='nblm-lab-theme';
+  try{var t=localStorage.getItem(TKEY); if(t)document.documentElement.setAttribute('data-theme',JSON.parse(t));}catch(e){}
+  document.getElementById('themeBtn').addEventListener('click',function(){
+    var cur=document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    var next=cur==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',next);
+    try{localStorage.setItem(TKEY,JSON.stringify(next))}catch(e){}
+  });
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var el=document.getElementById(btn.dataset.target), text=el.textContent;
+      function ok(){var o=btn.textContent;btn.textContent='Copied';btn.classList.add('ok');setTimeout(function(){btn.textContent=o;btn.classList.remove('ok')},1600);}
+      function fallback(){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent='Press Ctrl+C';}
+      try{navigator.clipboard.writeText(text).then(ok,fallback)}catch(e){fallback()}
+    });
+  });
+})();
+</script>
+</body>
+</html>
